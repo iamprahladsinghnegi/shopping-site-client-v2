@@ -1,0 +1,3 @@
+mutation addItem($url:String!, $name:String!, $category:String!, $subCategory:String!, $inventoryInfo:inventoryInput!) {
+  addItem(url:$url, name:$name, category:$category, subCategory:$subCategory, inventoryInfo:$inventoryInfo) 
+}

@@ -1,0 +1,15 @@
+mutation LoginUser($email: String!, $password: String!){
+  loginUser(email: $email, password: $password){
+    accessToken
+      user{
+        userId
+        email
+        firstName
+        lastName
+        cart{
+          cartId
+          count
+          }
+        }
+    }
+}

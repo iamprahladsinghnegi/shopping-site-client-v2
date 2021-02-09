@@ -1,0 +1,13 @@
+query UserDetails {
+    getUserDetails{
+        userId
+        email
+        firstName
+        lastName
+        cart{
+            cartId
+            count
+        }
+
+    }
+}

@@ -1,0 +1,38 @@
+.header{
+    height: 6.5vh;
+    background-color: #F3C4FB;
+    box-shadow: 0 4px 12px 0 rgba(0,0,0,.05);
+
+    &-search-box{
+        input{
+        color: #696e79;
+        background: #f5f5f6;
+        }   
+        .ant-input-affix-wrapper{
+            background-color: #f5f5f6;
+        }
+    }
+    &-icon{
+        background: #FFF;
+        color: #000;
+    }
+    .ant-dropdown-link{
+        color: #000;
+    }
+    .ant-dropdown-link:active{
+        color: green;
+    }
+    .ant-dropdown-link:hover{
+        color: red;
+    }
+    // &-drawer-title{
+
+    // }
+}
+//    background-color: lightblue; ->  header
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .header {
+    background-color: lightblue;
+  }
+}
