@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, Dropdown, Drawer, message, Menu, Row, Col, Input, Button } from 'antd';
 import './index.scss';
 import "antd/dist/antd.css";
-import { UserOutlined, NotificationOutlined, StarOutlined, SearchOutlined, MenuOutlined } from '@ant-design/icons';
+import { UserOutlined, NotificationOutlined, StarOutlined, SearchOutlined, MenuOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { setAccessToken } from 'src/accessToken';
 import { useLogoutUserMutation, useUserDetailsQuery } from 'src/generated/graphql';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
+import { getHeaderText } from 'src/util';
 
 interface HeaderProps {
+}
+
+interface MenuClickEventHandlerProps {
+    key: React.Key;
+    keyPath: React.Key[];
+    item: React.ReactInstance;
+    domEvent: React.MouseEvent<HTMLElement>;
 }
 
 export const Header: React.FC<HeaderProps> = () => {
@@ -15,6 +23,20 @@ export const Header: React.FC<HeaderProps> = () => {
     const [logoutUser, { client }] = useLogoutUserMutation()
     const [isVisible, setVisible] = useState<boolean | undefined>(false);
     const history = useHistory();
+    const { pathname } = useLocation();
+    const rootSubmenuKeys: string[] = ['1', '2', '3'];
+    const [drawerOpenKeys, setdrawerOpenKeys] = useState<string[]>([]);
+    const [currentWindow, setCurrentWindow] = useState(window.innerWidth);
+
+    useEffect(() => {
+        window.addEventListener("resize", (ev) => {
+            setCurrentWindow(window.innerWidth)
+        })
+    }, []);
+
+    if (loading) {
+        return <></>
+    }
     const showDrawer = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>): void => {
         setVisible(true);
     };
@@ -31,9 +53,6 @@ export const Header: React.FC<HeaderProps> = () => {
         })
     }
 
-    const rootSubmenuKeys: string[] = ['1', '2', '3'];
-    const [drawerOpenKeys, setdrawerOpenKeys] = useState<string[]>([]);
-
     const handleOpenChange = (keys: any): void => {
         const latestOpenKey: string = keys.find((key: string) => drawerOpenKeys.indexOf(key) === -1);
         if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
@@ -42,14 +61,6 @@ export const Header: React.FC<HeaderProps> = () => {
             setdrawerOpenKeys(latestOpenKey ? [latestOpenKey] : []);
         }
     };
-
-
-    interface MenuClickEventHandlerProps {
-        key: React.Key;
-        keyPath: React.Key[];
-        item: React.ReactInstance;
-        domEvent: React.MouseEvent<HTMLElement>;
-    }
 
     const onDrawerOptionClick = (key: MenuClickEventHandlerProps): void => {
         onClick(key)
@@ -116,16 +127,26 @@ export const Header: React.FC<HeaderProps> = () => {
         </>;
     }
 
+
+    const handleBack = (): void => {
+        history.goBack();
+    }
+    const headerIcon: JSX.Element = pathname === '/' ? <MenuOutlined onClick={showDrawer} /> : <ArrowLeftOutlined onClick={handleBack} />
+    const headerText: string = getHeaderText(pathname);
+
     return (
         <>
             <Row className="header" align="middle">
                 <Col className="gutter-row" xs={{ span: 10, offset: 0 }} sm={{ span: 10, offset: 4 }} md={{ span: 6, offset: 2 }} lg={{ span: 6, offset: 2 }} xl={{ span: 6, offset: 2 }} xxl={{ span: 6, offset: 2 }} >
                     <Row>
                         <Col xs={{ span: 3, offset: 3 }} sm={{ span: 0, offset: 0 }} md={{ span: 0, offset: 0 }} lg={{ span: 0, offset: 0 }} xl={{ span: 0, offset: 0 }}>
-                            <MenuOutlined onClick={showDrawer} />
+                            {headerIcon}
                         </Col>
-                        <Col xs={{ span: 12, offset: 2 }} sm={{ span: 7, offset: 0 }} md={{ span: 7, offset: 0 }} lg={{ span: 8, offset: 0 }} xl={{ span: 8, offset: 0 }}>
-                            <div style={{ color: "#000" }}>Fashion</div>
+                        <Col xs={{ span: 12, offset: 2 }} sm={{ span: 0, offset: 0 }} md={{ span: 0, offset: 0 }} lg={{ span: 0, offset: 0 }} xl={{ span: 0, offset: 0 }}>
+                            <div>{headerText}</div>
+                        </Col>
+                        <Col xs={{ span: 0, offset: 2 }} sm={{ span: 7, offset: 0 }} md={{ span: 7, offset: 0 }} lg={{ span: 8, offset: 0 }} xl={{ span: 8, offset: 0 }}>
+                            <div>Fashion</div>
                         </Col>
                         <Col xs={{ span: 0, offset: 0 }} sm={{ span: 3, offset: 2 }} md={{ span: 3, offset: 2 }} lg={{ span: 2, offset: 3 }} xl={{ span: 2, offset: 3 }}>
                             <Dropdown overlay={<Menu onClick={onClick}>{menuOption}</Menu>}>

@@ -7,6 +7,7 @@ import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import './index.scss';
 
 
 // retry https://www.apollographql.com/docs/link/links/error/#retrying-failed-requests
@@ -86,3 +87,6 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
+
+
+//  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;

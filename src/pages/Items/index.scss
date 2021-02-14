@@ -1,0 +1,101 @@
+.item{
+    &-listing{
+        &-layout{
+            &-sider{
+                overflow-y: 'auto';
+                height: '87.7vh';
+                background: "#fff";
+                &-content{
+                    &-category{
+                        &-options{
+                            margin: .5rem 0;
+                        }
+                    }
+                     &-price{
+                        &-options{
+                            margin: .5rem 0;
+                        }
+                    }
+                     &-color{
+                        &-options{
+                            margin: .5rem 0;
+                        }
+                    }
+                     &-discount{
+                        &-options{
+                            margin: .5rem 0;
+                        }
+                    }
+                }
+            }
+            &-content{
+                &-main{
+                    padding: 0 24px;
+                    &-items{
+                     // &-card{
+                        //     margin: 1rem;
+                        // }
+                    }
+                }
+                &-footer{
+                    display: none;
+                }
+            }
+        }
+    }
+
+}
+
+.label-color{
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+    // margin-left: 27px;
+    // background-color: red;
+}
+
+@media (max-width: 767px)  {
+  .item-listing{
+      &-breadcrumb {
+        display: none;
+    }
+     &-layout{
+         &-sider{
+        display:none;
+        }
+        &-content{
+            &-main{
+                padding: 0;
+                &-header{
+                    display: none;
+                }
+                // &-items{
+                //        &-card{
+                //            margin: 0 ;
+                //        }
+                //    }
+            }
+            &-footer{
+                display: block;
+                &-content{
+                    width: 50%;
+                    height: 3rem;
+                    border-radius: 0;
+                    border: 0;
+                    outline: none; 
+                }
+                
+            }
+        }
+      
+     }
+    .ant-col-xs-12 {
+        padding: 0 !important;
+        border: 1px solid lightgray;
+    }
+  }
+}
+
+

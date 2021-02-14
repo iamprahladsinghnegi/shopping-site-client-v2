@@ -1,0 +1,18 @@
+.homepage{
+  padding-top: 8px;
+  height: 93.5vh;
+  overflow-y: scroll;
+  &-carousel{
+    &-test{
+         height: 50vh;
+            color: #fff;
+            line-height: 40vh;
+            text-align: center;
+            background: #364d79,
+    }
+  }
+  &-item-categories{
+    // padding:
+    margin: 0 10px;
+  }
+}
