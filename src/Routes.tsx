@@ -15,7 +15,7 @@ export const Routes: React.FC = () => {
     <BrowserRouter>
       <Layout>
         <Header />
-        <Layout.Content>
+        <Layout.Content style={{ background: "#F8F9FA" }}>
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/register" component={Register} />

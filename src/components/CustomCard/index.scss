@@ -10,6 +10,7 @@
         }
     }
     &-round{
+      background: #f0f2f5;
         cursor:pointer;
         margin: 1em;
         border-radius: 50%;
@@ -20,6 +21,9 @@
             max-width: 15rem;
             margin: 1em auto 0 auto;
             border-radius: 50% !important;
+        }
+        &-body{
+          text-align: center;
         }
         // pointer-events: none;
     }
@@ -58,5 +62,13 @@
 @media (max-width: 767px)  {
   .preview-card{
       margin:0;
+  }
+  .cart-category{
+    &-square{
+      margin: 0;
     }
+    &-round{
+      margin: 0;
+    }
+  }
 }

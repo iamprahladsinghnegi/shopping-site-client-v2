@@ -11,8 +11,74 @@
             background: #364d79,
     }
   }
-  &-item-categories{
-    // padding:
-    margin: 0 10px;
+  &-item{
+    &-categories{
+      // padding:
+      // margin: 0 10px;
+       h1{
+         margin: 12px;
+       }
+       &-container{
+         .ant-row{
+            margin: 0 !important;
+          }
+        }
+    }
+    &-brands{
+      h1{
+        margin: 12px;
+      }
+      &-container{
+         .ant-row{
+            margin: 0 !important;
+          }
+      }
+    }
+  }
+  &-divider{
+    // padding: 0 24px;
   }
 }
+
+@media (max-width: 767px)  {
+  .homepage{
+    &-item{
+      &-brands{
+        &-container{
+          overflow-x: hidden;
+          .ant-row{
+            // margin: 0;
+            overflow-x: auto;
+            flex-flow: row;
+          }
+        }
+      }
+      &-categories{
+        &-container{
+          overflow-x: auto;
+          .ant-row{
+            // margin: 0;
+            flex-flow: row;
+          }
+        }
+      }
+    }
+    &-divider{
+    // padding: 0 24px;
+    }
+}
+}
+
+
+
+
+// /* Hide scrollbar for Chrome, Safari and Opera */
+// .example::-webkit-scrollbar {
+//     display: none;
+// }
+
+// /* Hide scrollbar for IE, Edge and Firefox */
+// .example {
+//   -ms-overflow-style: none;  /* IE and Edge */
+//   scrollbar-width: none;  /* Firefox */
+// }

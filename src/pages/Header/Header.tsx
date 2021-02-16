@@ -26,13 +26,15 @@ export const Header: React.FC<HeaderProps> = () => {
     const { pathname } = useLocation();
     const rootSubmenuKeys: string[] = ['1', '2', '3'];
     const [drawerOpenKeys, setdrawerOpenKeys] = useState<string[]>([]);
-    const [currentWindow, setCurrentWindow] = useState(window.innerWidth);
 
-    useEffect(() => {
-        window.addEventListener("resize", (ev) => {
-            setCurrentWindow(window.innerWidth)
-        })
-    }, []);
+
+    // const [currentWindow, setCurrentWindow] = useState(window.innerWidth);
+
+    // useEffect(() => {
+    //     window.addEventListener("resize", (ev) => {
+    //         setCurrentWindow(window.innerWidth)
+    //     })
+    // }, []);
 
     if (loading) {
         return <></>

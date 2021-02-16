@@ -353,25 +353,14 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
                 <NavBreadcrumb />
             </div>
             <Layout className="item-listing-layout">
-                <Layout.Sider className="item-listing-layout-sider" width={'15rem'}
-                    style={{
-                        overflowY: 'auto',
-                        height: '87.7vh',
-                        background: "#fff"
-                    }}
-                >
+                <Layout.Sider className="item-listing-layout-sider" width={'15rem'}>
                     <div className="item-listing-layout-sider-content" style={{ padding: '10px 20px' }}>
                         {filterHeader}
                         <Divider />
                         {filterOptions}
                     </div>
                 </Layout.Sider>
-                <Layout.Content
-                    className="item-listing-layout-content"
-                    style={{
-                        overflow: 'auto',
-                        height: '87.7vh',
-                    }}>
+                <Layout.Content className="item-listing-layout-content">
                     <div className="item-listing-layout-content-main">
                         <PageHeader
                             className="item-listing-layout-content-main-header"
