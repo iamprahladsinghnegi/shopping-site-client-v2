@@ -1,6 +1,7 @@
 .cart-category{
     &-square{
         margin: 1em;
+        background-color: white;
         &-image{
             overflow: hidden;
             object-fit: cover;
@@ -10,7 +11,7 @@
         }
     }
     &-round{
-      background: #f0f2f5;
+      background: transparent;
         cursor:pointer;
         margin: 1em;
         border-radius: 50%;
@@ -31,7 +32,7 @@
 }
 
 .preview-card{
-      margin: 1rem;
+      margin: 1rem 1rem ;
       &-body{
         display: flex;
         flex-direction: row;
@@ -43,18 +44,18 @@
               font-size: 14px;
             }
         }
-          &-star{
+        &-star{
            &-filled{
              color: red;
            }
         }
       }
       .ant-card-body {
-     padding: 8px 12px; 
-    }
-    .ant-card-meta-detail > div:not(:last-child) {
-    margin-bottom: 0;
-}
+        padding: 8px 12px; 
+      }
+      .ant-card-meta-detail > div:not(:last-child) {
+        margin-bottom: 0;
+      }
 }
 
 

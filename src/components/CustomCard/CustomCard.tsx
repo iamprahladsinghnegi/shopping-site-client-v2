@@ -3,7 +3,7 @@ import { Card } from 'antd';
 import './index.scss';
 import { HeartTwoTone, HeartFilled } from '@ant-design/icons';
 
-interface CustomCardProps {
+export interface CommonCardProps {
     param: string;
     imageUrl: string;
     title: string;
@@ -13,6 +13,17 @@ interface CustomCardProps {
     type?: string;
     price?: number;
     stared?: boolean | undefined | null;
+}
+export interface CustomCardProps extends CommonCardProps {
+    // param: string;
+    // imageUrl: string;
+    // title: string;
+    // description?: string;
+    // styleName?: string;
+    // hoverable: boolean;
+    // type?: string;
+    // price?: number;
+    // stared?: boolean | undefined | null;
     handleClick: ((event: React.MouseEvent<HTMLDivElement, MouseEvent>, param: string, option?: string) => void);
     onClickStar?: ((event: React.MouseEvent<HTMLSpanElement, MouseEvent>, param: string) => void);
 }

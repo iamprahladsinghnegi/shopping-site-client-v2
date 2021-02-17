@@ -11,7 +11,7 @@ export const Register: React.FC<RouteComponentProps> = ({ history }) => {
     useEffect(() => {
         const accessToken = getAccessToken();
         if (accessToken !== '') {
-            history.push('./');
+            history.replace('./');
         }
     }, [])
 

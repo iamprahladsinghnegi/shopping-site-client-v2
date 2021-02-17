@@ -38,7 +38,7 @@ export const ItemDetails: React.FC<ItemDetailsProps> = ({ }) => {
             </div>
             <div className="item-details-content">
                 <Row className="item-details-content-row" gutter={24} style={{ margin: 0 }}>
-                    <Col className="item-details-content-col1" xs={24} sm={24} md={12} lg={16} xl={14} xxl={14}>
+                    <Col className="item-details-content-col1" xs={24} sm={24} md={12} lg={14} xl={14} xxl={14}>
                         <div className="item-details-content-preview">
                             <Carousel className="item-details-content-preview-carousel">
                                 {tempData2.map(item => {
@@ -49,7 +49,7 @@ export const ItemDetails: React.FC<ItemDetailsProps> = ({ }) => {
                             </Carousel>
                         </div>
                     </Col>
-                    <Col className="item-details-content-col2" xs={24} sm={24} md={12} lg={8} xl={10} xxl={10}>
+                    <Col className="item-details-content-col2" xs={24} sm={24} md={12} lg={10} xl={10} xxl={10}>
                         <div className="item-details-content-description">
                             <div className="item-details-content-description-info">
                                 <div className="item-details-content-description-info-head">

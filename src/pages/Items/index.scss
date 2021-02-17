@@ -266,6 +266,13 @@
             }
         }
     }
+    &-categories{
+        height: 93.5vh;
+        &-content{
+            height: 88.5vh;
+            overflow-y: auto;
+        }
+    }
 
 }
 
@@ -465,6 +472,14 @@
                     }
                 }
             }
+        }
+    }
+    &-categories{
+        &-breadcrumb {
+            display: none;
+        }
+        &-content{
+            height: 93.5vh;
         }
     }
   }
