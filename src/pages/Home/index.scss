@@ -3,12 +3,15 @@
   height: 93.5vh;
   overflow-y: scroll;
   &-carousel{
-    &-test{
-         height: 50vh;
-            color: #fff;
-            line-height: 40vh;
-            text-align: center;
-            background: #364d79,
+    &-item{
+        //  height: 50vh;
+            // line-height: 40vh;
+            // background: #364d79,
+            img{
+               object-fit: cover;
+              height: 100%;
+               width: 100%
+            }
     }
   }
   &-item{
@@ -50,6 +53,13 @@
             // margin: 0;
             overflow-x: auto;
             flex-flow: row;
+
+            //to hide scroll
+            -ms-overflow-style: none;  
+            scrollbar-width: none; 
+            &::-webkit-scrollbar {
+                display: none;
+          }
           }
         }
       }

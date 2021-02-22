@@ -11,6 +11,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
 };
 
 export type Query = {
@@ -22,6 +24,7 @@ export type Query = {
   getInventoryLevelByInventoryId: Scalars['Float'];
   getCartDetailsByCartId: CartResponse;
   getCartDetailsByUserId: CartResponse;
+  getLatestOffers: Offers;
 };
 
 
@@ -90,11 +93,27 @@ export type Inentory = {
   discount?: Maybe<Scalars['Int']>;
 };
 
+export type Offers = {
+  __typename?: 'offers';
+  offers: Array<OffersItem>;
+  count?: Maybe<Scalars['Int']>;
+};
+
+export type OffersItem = {
+  __typename?: 'offersItem';
+  image: Scalars['String'];
+  title: Scalars['String'];
+  startAt: Scalars['DateTime'];
+  endAt: Scalars['DateTime'];
+  offerId: Scalars['String'];
+};
+
+
 export type Mutation = {
   __typename?: 'Mutation';
   revokeRefreshTokensForUser: Scalars['Boolean'];
   loginUser: LoginResponse;
-  registerUser: Scalars['String'];
+  registerUser: RegisterUserResponse;
   logoutUser: Scalars['Boolean'];
   addItem: Scalars['String'];
   updatedInventoryByInventoryId: Scalars['Boolean'];
@@ -102,6 +121,7 @@ export type Mutation = {
   decrementInventoryByInventoryId: Scalars['Boolean'];
   AddToCart: Scalars['Boolean'];
   adjustItemQyantity: Scalars['Boolean'];
+  addOffer: Scalars['String'];
 };
 
 
@@ -165,10 +185,67 @@ export type MutationAdjustItemQyantityArgs = {
   quantity?: Maybe<Scalars['Int']>;
 };
 
-export type LoginResponse = {
-  __typename?: 'LoginResponse';
+
+export type MutationAddOfferArgs = {
+  image: Scalars['String'];
+  title: Scalars['String'];
+  startAt: Scalars['DateTime'];
+  endAt: Scalars['DateTime'];
+};
+
+export type LoginResponse = EamilNotExistsError | PasswordNotMatchError | LoginSuccess;
+
+export type EamilNotExistsError = IError & {
+  __typename?: 'EamilNotExistsError';
+  message: Scalars['String'];
+  errorCode: Scalars['String'];
+  isEmailExists: Scalars['Boolean'];
+};
+
+export type IError = {
+  message: Scalars['String'];
+  errorCode: Scalars['String'];
+};
+
+export type PasswordNotMatchError = IError & {
+  __typename?: 'PasswordNotMatchError';
+  message: Scalars['String'];
+  errorCode: Scalars['String'];
+  isPasswordMatched: Scalars['Boolean'];
+};
+
+export type LoginSuccess = {
+  __typename?: 'LoginSuccess';
   accessToken: Scalars['String'];
   user: User;
+};
+
+export type RegisterUserResponse = AllreadyExistsError | HashedPassowdError | SomethingWentWrongError | RegisterSuccess;
+
+export type AllreadyExistsError = IError & {
+  __typename?: 'AllreadyExistsError';
+  message: Scalars['String'];
+  errorCode: Scalars['String'];
+  isUserExists: Scalars['Boolean'];
+};
+
+export type HashedPassowdError = IError & {
+  __typename?: 'HashedPassowdError';
+  message: Scalars['String'];
+  errorCode: Scalars['String'];
+  uanbleToHash: Scalars['Boolean'];
+};
+
+export type SomethingWentWrongError = IError & {
+  __typename?: 'SomethingWentWrongError';
+  message: Scalars['String'];
+  errorCode: Scalars['String'];
+  isSomethingWorng: Scalars['Boolean'];
+};
+
+export type RegisterSuccess = {
+  __typename?: 'RegisterSuccess';
+  userId: Scalars['String'];
 };
 
 export type InventoryInput = {
@@ -208,8 +285,14 @@ export type LoginUserMutationVariables = Exact<{
 export type LoginUserMutation = (
   { __typename?: 'Mutation' }
   & { loginUser: (
-    { __typename?: 'LoginResponse' }
-    & Pick<LoginResponse, 'accessToken'>
+    { __typename: 'EamilNotExistsError' }
+    & Pick<EamilNotExistsError, 'message' | 'errorCode' | 'isEmailExists'>
+  ) | (
+    { __typename: 'PasswordNotMatchError' }
+    & Pick<PasswordNotMatchError, 'message' | 'errorCode' | 'isPasswordMatched'>
+  ) | (
+    { __typename: 'LoginSuccess' }
+    & Pick<LoginSuccess, 'accessToken'>
     & { user: (
       { __typename?: 'User' }
       & Pick<User, 'userId' | 'email' | 'firstName' | 'lastName'>
@@ -229,6 +312,21 @@ export type LogoutUserMutation = (
   & Pick<Mutation, 'logoutUser'>
 );
 
+export type GetLAtestOffersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetLAtestOffersQuery = (
+  { __typename?: 'Query' }
+  & { getLatestOffers: (
+    { __typename?: 'offers' }
+    & Pick<Offers, 'count'>
+    & { offers: Array<(
+      { __typename?: 'offersItem' }
+      & Pick<OffersItem, 'offerId' | 'image' | 'title' | 'startAt' | 'endAt'>
+    )> }
+  ) }
+);
+
 export type RegisterUserMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
@@ -239,7 +337,19 @@ export type RegisterUserMutationVariables = Exact<{
 
 export type RegisterUserMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'registerUser'>
+  & { registerUser: (
+    { __typename: 'AllreadyExistsError' }
+    & Pick<AllreadyExistsError, 'message' | 'errorCode' | 'isUserExists'>
+  ) | (
+    { __typename: 'HashedPassowdError' }
+    & Pick<HashedPassowdError, 'message' | 'errorCode'>
+  ) | (
+    { __typename: 'SomethingWentWrongError' }
+    & Pick<SomethingWentWrongError, 'message' | 'errorCode'>
+  ) | (
+    { __typename: 'RegisterSuccess' }
+    & Pick<RegisterSuccess, 'userId'>
+  ) }
 );
 
 export type UserDetailsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -331,15 +441,28 @@ export type ByeQueryResult = Apollo.QueryResult<ByeQuery, ByeQueryVariables>;
 export const LoginUserDocument = gql`
     mutation LoginUser($email: String!, $password: String!) {
   loginUser(email: $email, password: $password) {
-    accessToken
-    user {
-      userId
-      email
-      firstName
-      lastName
-      cart {
-        cartId
-        count
+    __typename
+    ... on IError {
+      message
+      errorCode
+    }
+    ... on EamilNotExistsError {
+      isEmailExists
+    }
+    ... on PasswordNotMatchError {
+      isPasswordMatched
+    }
+    ... on LoginSuccess {
+      accessToken
+      user {
+        userId
+        email
+        firstName
+        lastName
+        cart {
+          cartId
+          count
+        }
       }
     }
   }
@@ -400,6 +523,45 @@ export function useLogoutUserMutation(baseOptions?: Apollo.MutationHookOptions<L
 export type LogoutUserMutationHookResult = ReturnType<typeof useLogoutUserMutation>;
 export type LogoutUserMutationResult = Apollo.MutationResult<LogoutUserMutation>;
 export type LogoutUserMutationOptions = Apollo.BaseMutationOptions<LogoutUserMutation, LogoutUserMutationVariables>;
+export const GetLAtestOffersDocument = gql`
+    query GetLAtestOffers {
+  getLatestOffers {
+    offers {
+      offerId
+      image
+      title
+      startAt
+      endAt
+    }
+    count
+  }
+}
+    `;
+
+/**
+ * __useGetLAtestOffersQuery__
+ *
+ * To run a query within a React component, call `useGetLAtestOffersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLAtestOffersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLAtestOffersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetLAtestOffersQuery(baseOptions?: Apollo.QueryHookOptions<GetLAtestOffersQuery, GetLAtestOffersQueryVariables>) {
+        return Apollo.useQuery<GetLAtestOffersQuery, GetLAtestOffersQueryVariables>(GetLAtestOffersDocument, baseOptions);
+      }
+export function useGetLAtestOffersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLAtestOffersQuery, GetLAtestOffersQueryVariables>) {
+          return Apollo.useLazyQuery<GetLAtestOffersQuery, GetLAtestOffersQueryVariables>(GetLAtestOffersDocument, baseOptions);
+        }
+export type GetLAtestOffersQueryHookResult = ReturnType<typeof useGetLAtestOffersQuery>;
+export type GetLAtestOffersLazyQueryHookResult = ReturnType<typeof useGetLAtestOffersLazyQuery>;
+export type GetLAtestOffersQueryResult = Apollo.QueryResult<GetLAtestOffersQuery, GetLAtestOffersQueryVariables>;
 export const RegisterUserDocument = gql`
     mutation RegisterUser($email: String!, $password: String!, $firstName: String!, $lastName: String) {
   registerUser(
@@ -407,7 +569,19 @@ export const RegisterUserDocument = gql`
     password: $password
     firstName: $firstName
     lastName: $lastName
-  )
+  ) {
+    __typename
+    ... on IError {
+      message
+      errorCode
+    }
+    ... on AllreadyExistsError {
+      isUserExists
+    }
+    ... on RegisterSuccess {
+      userId
+    }
+  }
 }
     `;
 export type RegisterUserMutationFn = Apollo.MutationFunction<RegisterUserMutation, RegisterUserMutationVariables>;

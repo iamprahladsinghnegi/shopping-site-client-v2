@@ -1,14 +1,14 @@
 .cart-category{
     &-square{
         margin: 1em;
-        background-color: white;
-        &-image{
-            overflow: hidden;
-            object-fit: cover;
-            height: 15rem;
-            max-width: 15rem;
-            margin: 1em auto 0 auto;
-        }
+        // background-color: white;
+        // &-image{
+        //     overflow: hidden;
+        //     object-fit: cover;
+        //     height: 15rem;
+        //     max-width: 15rem;
+        //     margin: 1em auto 0 auto;
+        // }
     }
     &-round{
       background: transparent;
@@ -26,7 +26,6 @@
         &-body{
           text-align: center;
         }
-        // pointer-events: none;
     }
     
 }
@@ -66,7 +65,7 @@
   }
   .cart-category{
     &-square{
-      margin: 0;
+      // margin: 0;
     }
     &-round{
       margin: 0;

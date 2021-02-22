@@ -1,3 +1,19 @@
+# mutation RegisterUser($email: String!, $password: String!, $firstName:String!, $lastName:String){
+#   registerUser(email:$email, password:$password, firstName:$firstName, lastName:$lastName)
+# }
+
 mutation RegisterUser($email: String!, $password: String!, $firstName:String!, $lastName:String){
-  registerUser(email:$email, password:$password, firstName:$firstName, lastName:$lastName)
+  registerUser(email:$email, password:$password, firstName:$firstName, lastName:$lastName){
+    __typename
+    ...on IError{
+      message
+      errorCode
+    }
+    ...on AllreadyExistsError{
+      isUserExists
+    }
+    ...on RegisterSuccess{
+      userId
+    }
+  }
 }

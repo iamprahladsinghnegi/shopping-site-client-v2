@@ -1,0 +1,12 @@
+query GetLAtestOffers{
+  getLatestOffers{
+    offers{
+      offerId
+      image
+      title
+      startAt
+      endAt
+    }
+    count
+  }
+}

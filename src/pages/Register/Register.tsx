@@ -1,24 +1,39 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom';
 import { useRegisterUserMutation } from 'src/generated/graphql';
 import './index.scss';
 import { Form, Input, Button, Card, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { getAccessToken } from 'src/accessToken';
 
 
+interface RegisterFormProps {
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    passwordConfirm: string
+}
+
 export const Register: React.FC<RouteComponentProps> = ({ history }) => {
+
+    // check for access token in loacl storage
+    // if user has accesstoken, redirect user to home otherwise load the component
     useEffect(() => {
         const accessToken = getAccessToken();
-        if (accessToken !== '') {
+        if (accessToken && accessToken !== '') {
             history.replace('./');
         }
     }, [])
 
+    // mutation to register a user  
     const [registerUser] = useRegisterUserMutation()
+
+
     const [form] = Form.useForm()
-    const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
+
+    // basic validation and call muatation
+    const onFinish = (values: RegisterFormProps) => {
         if (values.password !== values.passwordConfirm) {
             message.warn("Password doesn't match")
             return
@@ -27,20 +42,33 @@ export const Register: React.FC<RouteComponentProps> = ({ history }) => {
             variables: {
                 email: values.email,
                 password: values.password,
-                firstName: "temp1",
-                lastName: "temp2"
+                firstName: values.firstName,
+                lastName: values.lastName
             }
-        }).then(res => {
-            console.log('userId :', res)
-            history.push("/");
+        }).then(_res => {
+            console.log(_res)
+            if (_res.data?.registerUser.__typename === "RegisterSuccess") {
+                // navigate to login
+                history.push("/login");
+            }
+            else if (_res.data?.registerUser.__typename === "AllreadyExistsError") {
+                form.setFields([{ name: "email", errors: ["Email alredy exists!"] }])
+            }
+            else {
+                //handle other errors (based on error code)
+                console.log(_res.data?.registerUser)
+                message.warning('Something went worng')
+            }
         })
     };
-    const logIn = (values: any) => {
-        history.push("/login");
 
+    // navigate to login
+    const logIn = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        history.push("/login");
     }
-    const confrimPassword = (rule: any, value: any, callback: any) => {
-        console.log(value)
+
+    // custom validator for confirm passwod
+    const confrimPassword = (rule: any, value: any, callback: (error?: string) => void): Promise<void | any> | void => {
         let { password } = form.getFieldsValue()
         if (!value || value === password) {
             callback();
@@ -57,9 +85,22 @@ export const Register: React.FC<RouteComponentProps> = ({ history }) => {
                     form={form}
                     name="normal_register"
                     className="register-form"
-                    initialValues={{ email: '', password: '', passwordConfirm: '' }}
+                    initialValues={{ firstName: '', lastName: '', email: '', password: '', passwordConfirm: '' }}
                     onFinish={onFinish}
                 >
+                    <Form.Item
+                        name="firstName"
+                        rules={[{ type: 'string', required: true, message: 'Please input your First Name!' }]}
+                    >
+                        <Input placeholder="First Name" prefix={<UserOutlined className="site-form-item-icon" />} />
+                    </Form.Item>
+                    <Form.Item
+                        name="lastName"
+                        rules={[{ type: 'string', required: true, message: 'Please input your Last Name!' }]}
+                    >
+                        <Input placeholder="Last Name" prefix={<UserOutlined className="site-form-item-icon" />} />
+                    </Form.Item>
+
                     <Form.Item
                         name="email"
                         rules={[{ type: 'email', required: true, message: 'Please input your Email!' }]}
@@ -94,7 +135,7 @@ export const Register: React.FC<RouteComponentProps> = ({ history }) => {
                         </Button>
                     </Form.Item>
                     <Form.Item>
-                        <Button type="dashed" className="register-form-button" onClick={e => logIn(e)}>
+                        <Button type="dashed" className="register-form-button" onClick={logIn}>
                             Log in
                         </Button>
                     </Form.Item>
