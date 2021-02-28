@@ -1,0 +1,6 @@
+query GetAllItemIdsBySubCategory($subCategory:String!){
+	getAllItemIdsBySubCategory(subCategory:$subCategory){
+   itemIds
+    count
+  }
+}

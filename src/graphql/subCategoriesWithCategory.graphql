@@ -1,0 +1,7 @@
+query getAllSubCategoriesWithCategory{
+	getAllSubCategoriesWithCategory{
+    category
+    subCategory
+    image
+  }  
+}

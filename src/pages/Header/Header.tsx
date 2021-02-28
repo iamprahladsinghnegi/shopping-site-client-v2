@@ -4,7 +4,7 @@ import './index.scss';
 import "antd/dist/antd.css";
 import { UserOutlined, NotificationOutlined, StarOutlined, SearchOutlined, MenuOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { setAccessToken } from 'src/accessToken';
-import { useLogoutUserMutation, useUserDetailsQuery } from 'src/generated/graphql';
+import { useGetAllCategoryAndSubCategoryNameQuery, useLogoutUserMutation, useUserDetailsQuery } from 'src/generated/graphql';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { getHeaderText } from 'src/util';
 
@@ -19,14 +19,14 @@ interface MenuClickEventHandlerProps {
 }
 
 export const Header: React.FC<HeaderProps> = () => {
-    const { data, loading } = useUserDetailsQuery()
+    const { data: userData, loading: userLoading } = useUserDetailsQuery()
     const [logoutUser, { client }] = useLogoutUserMutation()
     const [isVisible, setVisible] = useState<boolean | undefined>(false);
     const history = useHistory();
     const { pathname } = useLocation();
     const rootSubmenuKeys: string[] = ['1', '2', '3'];
     const [drawerOpenKeys, setdrawerOpenKeys] = useState<string[]>([]);
-
+    const { data: categoryData, loading: categoryLoading } = useGetAllCategoryAndSubCategoryNameQuery();
 
     // const [currentWindow, setCurrentWindow] = useState(window.innerWidth);
 
@@ -36,9 +36,10 @@ export const Header: React.FC<HeaderProps> = () => {
     //     })
     // }, []);
 
-    if (loading) {
+    if (userLoading || categoryLoading) {
         return <></>
     }
+    console.log(categoryData)
     const showDrawer = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>): void => {
         setVisible(true);
     };
@@ -70,7 +71,7 @@ export const Header: React.FC<HeaderProps> = () => {
     }
 
     const onClick = (key: MenuClickEventHandlerProps): void => {
-        message.info(`Click on item ${key.key}`);
+        history.push(`/items/${key.key}`)
     };
 
     const onClickCart = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>): void => {
@@ -90,43 +91,40 @@ export const Header: React.FC<HeaderProps> = () => {
         </div>
     </>;
 
-    const menuOption = <>
-        <Menu.SubMenu key="1" title="Topwear ">
-            <Menu.Item key="T-Shirts">T-Shirts</Menu.Item>
-            <Menu.Item key="Casual Shirts">Casual Shirts</Menu.Item>
-            <Menu.Item key="Formal Shirts">Formal Shirts</Menu.Item>
-            <Menu.Item key="Sweatshirts">Sweatshirts</Menu.Item>
-            <Menu.Item key="Sweaters">Sweaters</Menu.Item>
-            <Menu.Item key="Jackets">Jackets</Menu.Item>
-        </Menu.SubMenu>
-        <Menu.SubMenu key="2" title="Bottomwear ">
-            <Menu.Item key="Jeans" >Jeans</Menu.Item>
-            <Menu.Item key="Casual Trousers" >Casual Trousers</Menu.Item>
-            <Menu.Item key="Formal Trousers" >Formal Trousers</Menu.Item>
-            <Menu.Item key="Track Pants & Joggers" >Track Pants & Joggers</Menu.Item>
-        </Menu.SubMenu>
-        <Menu.SubMenu key="3" title="Footwear ">
-            <Menu.Item key="Sports Shoes">Sports Shoes</Menu.Item>
-            <Menu.Item key="Casual Shoes">Casual Shoes</Menu.Item>
-            <Menu.Item key="Formal Shoes">Formal Shoes</Menu.Item>
-            <Menu.Item key="Sneakers">Sneakers</Menu.Item>
-            <Menu.Item key="Sandals & Floaters">Sandals & Floaters</Menu.Item>
-        </Menu.SubMenu>
-    </>
-
     let userMenuOption: any = null;
 
-    if (loading || !data || !data.getUserDetails) {
+    if (!userData || !userData.getUserDetails) {
         userMenuOption = <>
             <Menu.Item key="login" ><Link to="/login">Log in</Link></Menu.Item>
             <Menu.Item key="signin"><Link to="/register">register</Link></Menu.Item>
         </>;
     } else {
         userMenuOption = <>
-            <Menu.Item key="login" >{data.getUserDetails.email}</Menu.Item>
+            <Menu.Item key="login" >{userData.getUserDetails.email}</Menu.Item>
             <Menu.Item key="Casuals">Profile</Menu.Item>
             <Menu.Item key="logout"><Button style={{ width: "100%" }} onClick={e => logOutUser(e)}>log out</Button></Menu.Item>
         </>;
+    }
+
+    let menuOption: JSX.Element[] | null = null;
+
+    if (!categoryData || !categoryData.getAllCategoryAndSubCategoryName) {
+        //use default menu
+    } else {
+        // let categories: JSX.Element[] = [];
+        // categoryData.getAllCategoryAndSubCategoryName.forEach((element, index) => {
+        //     let subCategories: JSX.Element[] = []
+        //     element.subCategory.forEach(ele => {
+        //         subCategories.push(<Menu.Item key={ele}>{ele}</Menu.Item>)
+        //     })
+        //     categories.push(<Menu.SubMenu key={index} title={element.category}>{subCategories}</Menu.SubMenu>)
+        // })
+        // menuOption = categories
+        menuOption = categoryData.getAllCategoryAndSubCategoryName.map((element, index) => {
+            return <Menu.SubMenu key={index} title={element.category}>{element.subCategory.map(ele => {
+                return <Menu.Item key={ele}>{ele}</Menu.Item>
+            })}</Menu.SubMenu>
+        })
     }
 
 
@@ -139,44 +137,26 @@ export const Header: React.FC<HeaderProps> = () => {
     return (
         <>
             <Row className="header" align="middle">
-                <Col className="gutter-row" xs={{ span: 10, offset: 0 }} sm={{ span: 10, offset: 4 }} md={{ span: 6, offset: 2 }} lg={{ span: 6, offset: 2 }} xl={{ span: 6, offset: 2 }} xxl={{ span: 6, offset: 2 }} >
+                <Col className="gutter-row" xs={{ span: 10, offset: 0 }} sm={{ span: 16, offset: 2 }} md={{ span: 12, offset: 2 }} lg={{ span: 10, offset: 2 }} xl={{ span: 10, offset: 2 }} xxl={{ span: 9, offset: 2 }} >
                     <Row>
-                        <Col xs={{ span: 3, offset: 3 }} sm={{ span: 0, offset: 0 }} md={{ span: 0, offset: 0 }} lg={{ span: 0, offset: 0 }} xl={{ span: 0, offset: 0 }}>
+                        <Col xs={{ span: 3, offset: 3 }} sm={{ span: 0, offset: 0 }} md={{ span: 0, offset: 0 }} lg={{ span: 0, offset: 0 }} xl={{ span: 0, offset: 0 }} xxl={{ span: 0, offset: 0 }}>
                             {headerIcon}
                         </Col>
-                        <Col xs={{ span: 12, offset: 2 }} sm={{ span: 0, offset: 0 }} md={{ span: 0, offset: 0 }} lg={{ span: 0, offset: 0 }} xl={{ span: 0, offset: 0 }}>
-                            <div>{headerText}</div>
+                        <Col xs={{ span: 12, offset: 2 }} sm={{ span: 0, offset: 0 }} md={{ span: 0, offset: 0 }} lg={{ span: 0, offset: 0 }} xl={{ span: 0, offset: 0 }} xxl={{ span: 0, offset: 0 }}>
+                            <span>{headerText}</span>
                         </Col>
-                        <Col xs={{ span: 0, offset: 2 }} sm={{ span: 7, offset: 0 }} md={{ span: 7, offset: 0 }} lg={{ span: 8, offset: 0 }} xl={{ span: 8, offset: 0 }}>
-                            <div>Fashion</div>
+                        <Col xs={{ span: 0, offset: 2 }} sm={{ span: 4, offset: 0 }} md={{ span: 4, offset: 0 }} lg={{ span: 4, offset: 0 }} xl={{ span: 4, offset: 0 }} xxl={{ span: 6, offset: 0 }}>
+                            <span>Fashion</span>
                         </Col>
-                        <Col xs={{ span: 0, offset: 0 }} sm={{ span: 3, offset: 2 }} md={{ span: 3, offset: 2 }} lg={{ span: 2, offset: 3 }} xl={{ span: 2, offset: 3 }}>
-                            <Dropdown overlay={<Menu onClick={onClick}>{menuOption}</Menu>}>
-                                <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                                    Men
-                                </a>
-                            </Dropdown>
-                        </Col>
-                        <Col xs={{ span: 0, offset: 0 }} sm={{ span: 3, offset: 2 }} md={{ span: 3, offset: 2 }} lg={{ span: 2, offset: 3 }} xl={{ span: 2, offset: 3 }}>
-                            <Dropdown overlay={<Menu onClick={onClick}>{menuOption}</Menu>}>
-                                <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                                    Women
-                                </a>
-                            </Dropdown>
-                        </Col>
-                        <Col xs={{ span: 0, offset: 0 }} sm={{ span: 3, offset: 4 }} md={{ span: 3, offset: 4 }} lg={{ span: 2, offset: 4 }} xl={{ span: 2, offset: 4 }}>
-                            <Dropdown overlay={<Menu onClick={onClick}>{menuOption}</Menu>}>
-                                <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                                    Kids
-                                </a>
-                            </Dropdown>
+                        <Col xs={{ span: 0, offset: 0 }} sm={{ span: 20, offset: 0 }} md={{ span: 20, offset: 0 }} lg={{ span: 20, offset: 0 }} xl={{ span: 20, offset: 0 }} xxl={{ span: 18, offset: 0 }}>
+                            <Menu style={{ background: 'transparent', border: 0, lineHeight: '24px' }} mode="horizontal" onClick={onClick}>{menuOption}</Menu>
                         </Col>
                     </Row>
                 </Col>
-                <Col className="gutter-row header-search-box" xs={{ span: 0, offset: 0 }} sm={{ span: 0, offset: 0 }} md={{ span: 8, offset: 2 }} lg={{ span: 8, offset: 3 }} xl={{ span: 8, offset: 3 }} xxl={{ span: 8, offset: 4 }}>
+                <Col className="gutter-row header-search-box" xs={{ span: 0, offset: 0 }} sm={{ span: 0, offset: 0 }} md={{ span: 4, offset: 0 }} lg={{ span: 6, offset: 1 }} xl={{ span: 6, offset: 1 }} xxl={{ span: 8, offset: 1 }}>
                     <Input.Search allowClear placeholder="Search" onSearch={onSearch} />
                 </Col>
-                <Col className="gutter-row" xs={{ span: 10, offset: 4 }} sm={{ span: 4, offset: 4 }} md={{ span: 4, offset: 1 }} lg={{ span: 4, offset: 1 }} xl={{ span: 4, offset: 1 }} xxl={{ span: 3, offset: 1 }} >
+                <Col className="gutter-row" xs={{ span: 10, offset: 4 }} sm={{ span: 4, offset: 0 }} md={{ span: 4, offset: 1 }} lg={{ span: 4, offset: 1 }} xl={{ span: 4, offset: 1 }} xxl={{ span: 3, offset: 1 }} >
                     <Row>
                         <Col xs={{ span: 6, offset: 5 }} sm={{ span: 6, offset: 0 }} md={{ span: 0, offset: 0 }} lg={{ span: 0, offset: 0 }} xl={{ span: 0, offset: 0 }} xxl={{ span: 0, offset: 0 }} >
                             <Avatar shape="square" className="header-icon" icon={<SearchOutlined onClick={onClickNotification} />} />

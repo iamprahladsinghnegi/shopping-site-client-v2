@@ -21,6 +21,9 @@ export type Query = {
   bye: Scalars['String'];
   geAllItemsIds: ItemIdsResponse;
   getItemDetailsById: ItemResponse;
+  getAllCategoryAndSubCategoryName: Array<CategoryAndSubCategory>;
+  getAllSubCategoriesWithCategory: Array<SubCategoryWithCategoryResponse>;
+  getAllItemIdsBySubCategory: ItemIdsResponse;
   getInventoryLevelByInventoryId: Scalars['Float'];
   getCartDetailsByCartId: CartResponse;
   getCartDetailsByUserId: CartResponse;
@@ -30,6 +33,11 @@ export type Query = {
 
 export type QueryGetItemDetailsByIdArgs = {
   itemId: Scalars['String'];
+};
+
+
+export type QueryGetAllItemIdsBySubCategoryArgs = {
+  subCategory: Scalars['String'];
 };
 
 
@@ -80,6 +88,8 @@ export type ItemResponse = {
   itemId: Scalars['String'];
   url: Scalars['String'];
   name: Scalars['String'];
+  brand: Scalars['String'];
+  isStared: Scalars['Boolean'];
   category: Scalars['String'];
   subCategory: Scalars['String'];
   inventory: Inentory;
@@ -91,6 +101,19 @@ export type Inentory = {
   available: Scalars['Int'];
   price: Scalars['Int'];
   discount?: Maybe<Scalars['Int']>;
+};
+
+export type CategoryAndSubCategory = {
+  __typename?: 'CategoryAndSubCategory';
+  category: Scalars['String'];
+  subCategory: Array<Scalars['String']>;
+};
+
+export type SubCategoryWithCategoryResponse = {
+  __typename?: 'SubCategoryWithCategoryResponse';
+  category: Scalars['String'];
+  subCategory: Scalars['String'];
+  image: Scalars['String'];
 };
 
 export type Offers = {
@@ -116,6 +139,7 @@ export type Mutation = {
   registerUser: RegisterUserResponse;
   logoutUser: Scalars['Boolean'];
   addItem: Scalars['String'];
+  addRemoveItemToWishlist: Scalars['Boolean'];
   updatedInventoryByInventoryId: Scalars['Boolean'];
   incrementInventoryByInventoryId: Scalars['Boolean'];
   decrementInventoryByInventoryId: Scalars['Boolean'];
@@ -150,6 +174,12 @@ export type MutationAddItemArgs = {
   category: Scalars['String'];
   subCategory: Scalars['String'];
   inventoryInfo: InventoryInput;
+};
+
+
+export type MutationAddRemoveItemToWishlistArgs = {
+  itemId: Scalars['String'];
+  action: AddOrRemove;
 };
 
 
@@ -254,6 +284,12 @@ export type InventoryInput = {
   discount?: Maybe<Scalars['Int']>;
 };
 
+/** add or remove item form wishlist */
+export enum AddOrRemove {
+  Add = 'ADD',
+  Remove = 'REMOVE'
+}
+
 export type AddItemMutationVariables = Exact<{
   url: Scalars['String'];
   name: Scalars['String'];
@@ -268,12 +304,64 @@ export type AddItemMutation = (
   & Pick<Mutation, 'addItem'>
 );
 
+export type AddRemoveItemToWishlistMutationVariables = Exact<{
+  itemId: Scalars['String'];
+  action: AddOrRemove;
+}>;
+
+
+export type AddRemoveItemToWishlistMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addRemoveItemToWishlist'>
+);
+
+export type GetAllItemIdsBySubCategoryQueryVariables = Exact<{
+  subCategory: Scalars['String'];
+}>;
+
+
+export type GetAllItemIdsBySubCategoryQuery = (
+  { __typename?: 'Query' }
+  & { getAllItemIdsBySubCategory: (
+    { __typename?: 'ItemIdsResponse' }
+    & Pick<ItemIdsResponse, 'itemIds' | 'count'>
+  ) }
+);
+
 export type ByeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ByeQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'bye'>
+);
+
+export type GetAllCategoryAndSubCategoryNameQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllCategoryAndSubCategoryNameQuery = (
+  { __typename?: 'Query' }
+  & { getAllCategoryAndSubCategoryName: Array<(
+    { __typename?: 'CategoryAndSubCategory' }
+    & Pick<CategoryAndSubCategory, 'category' | 'subCategory'>
+  )> }
+);
+
+export type GetItemDetailsByIdQueryVariables = Exact<{
+  itemId: Scalars['String'];
+}>;
+
+
+export type GetItemDetailsByIdQuery = (
+  { __typename?: 'Query' }
+  & { getItemDetailsById: (
+    { __typename?: 'ItemResponse' }
+    & Pick<ItemResponse, 'itemId' | 'url' | 'name' | 'brand' | 'category' | 'isStared' | 'subCategory'>
+    & { inventory: (
+      { __typename?: 'inentory' }
+      & Pick<Inentory, 'inventoryId' | 'available' | 'price' | 'discount'>
+    ) }
+  ) }
 );
 
 export type LoginUserMutationVariables = Exact<{
@@ -352,6 +440,17 @@ export type RegisterUserMutation = (
   ) }
 );
 
+export type GetAllSubCategoriesWithCategoryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllSubCategoriesWithCategoryQuery = (
+  { __typename?: 'Query' }
+  & { getAllSubCategoriesWithCategory: Array<(
+    { __typename?: 'SubCategoryWithCategoryResponse' }
+    & Pick<SubCategoryWithCategoryResponse, 'category' | 'subCategory' | 'image'>
+  )> }
+);
+
 export type UserDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -408,6 +507,71 @@ export function useAddItemMutation(baseOptions?: Apollo.MutationHookOptions<AddI
 export type AddItemMutationHookResult = ReturnType<typeof useAddItemMutation>;
 export type AddItemMutationResult = Apollo.MutationResult<AddItemMutation>;
 export type AddItemMutationOptions = Apollo.BaseMutationOptions<AddItemMutation, AddItemMutationVariables>;
+export const AddRemoveItemToWishlistDocument = gql`
+    mutation AddRemoveItemToWishlist($itemId: String!, $action: AddOrRemove!) {
+  addRemoveItemToWishlist(itemId: $itemId, action: $action)
+}
+    `;
+export type AddRemoveItemToWishlistMutationFn = Apollo.MutationFunction<AddRemoveItemToWishlistMutation, AddRemoveItemToWishlistMutationVariables>;
+
+/**
+ * __useAddRemoveItemToWishlistMutation__
+ *
+ * To run a mutation, you first call `useAddRemoveItemToWishlistMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddRemoveItemToWishlistMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addRemoveItemToWishlistMutation, { data, loading, error }] = useAddRemoveItemToWishlistMutation({
+ *   variables: {
+ *      itemId: // value for 'itemId'
+ *      action: // value for 'action'
+ *   },
+ * });
+ */
+export function useAddRemoveItemToWishlistMutation(baseOptions?: Apollo.MutationHookOptions<AddRemoveItemToWishlistMutation, AddRemoveItemToWishlistMutationVariables>) {
+        return Apollo.useMutation<AddRemoveItemToWishlistMutation, AddRemoveItemToWishlistMutationVariables>(AddRemoveItemToWishlistDocument, baseOptions);
+      }
+export type AddRemoveItemToWishlistMutationHookResult = ReturnType<typeof useAddRemoveItemToWishlistMutation>;
+export type AddRemoveItemToWishlistMutationResult = Apollo.MutationResult<AddRemoveItemToWishlistMutation>;
+export type AddRemoveItemToWishlistMutationOptions = Apollo.BaseMutationOptions<AddRemoveItemToWishlistMutation, AddRemoveItemToWishlistMutationVariables>;
+export const GetAllItemIdsBySubCategoryDocument = gql`
+    query GetAllItemIdsBySubCategory($subCategory: String!) {
+  getAllItemIdsBySubCategory(subCategory: $subCategory) {
+    itemIds
+    count
+  }
+}
+    `;
+
+/**
+ * __useGetAllItemIdsBySubCategoryQuery__
+ *
+ * To run a query within a React component, call `useGetAllItemIdsBySubCategoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllItemIdsBySubCategoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllItemIdsBySubCategoryQuery({
+ *   variables: {
+ *      subCategory: // value for 'subCategory'
+ *   },
+ * });
+ */
+export function useGetAllItemIdsBySubCategoryQuery(baseOptions: Apollo.QueryHookOptions<GetAllItemIdsBySubCategoryQuery, GetAllItemIdsBySubCategoryQueryVariables>) {
+        return Apollo.useQuery<GetAllItemIdsBySubCategoryQuery, GetAllItemIdsBySubCategoryQueryVariables>(GetAllItemIdsBySubCategoryDocument, baseOptions);
+      }
+export function useGetAllItemIdsBySubCategoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllItemIdsBySubCategoryQuery, GetAllItemIdsBySubCategoryQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllItemIdsBySubCategoryQuery, GetAllItemIdsBySubCategoryQueryVariables>(GetAllItemIdsBySubCategoryDocument, baseOptions);
+        }
+export type GetAllItemIdsBySubCategoryQueryHookResult = ReturnType<typeof useGetAllItemIdsBySubCategoryQuery>;
+export type GetAllItemIdsBySubCategoryLazyQueryHookResult = ReturnType<typeof useGetAllItemIdsBySubCategoryLazyQuery>;
+export type GetAllItemIdsBySubCategoryQueryResult = Apollo.QueryResult<GetAllItemIdsBySubCategoryQuery, GetAllItemIdsBySubCategoryQueryVariables>;
 export const ByeDocument = gql`
     query Bye {
   bye
@@ -438,6 +602,84 @@ export function useByeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ByeQue
 export type ByeQueryHookResult = ReturnType<typeof useByeQuery>;
 export type ByeLazyQueryHookResult = ReturnType<typeof useByeLazyQuery>;
 export type ByeQueryResult = Apollo.QueryResult<ByeQuery, ByeQueryVariables>;
+export const GetAllCategoryAndSubCategoryNameDocument = gql`
+    query GetAllCategoryAndSubCategoryName {
+  getAllCategoryAndSubCategoryName {
+    category
+    subCategory
+  }
+}
+    `;
+
+/**
+ * __useGetAllCategoryAndSubCategoryNameQuery__
+ *
+ * To run a query within a React component, call `useGetAllCategoryAndSubCategoryNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllCategoryAndSubCategoryNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllCategoryAndSubCategoryNameQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllCategoryAndSubCategoryNameQuery(baseOptions?: Apollo.QueryHookOptions<GetAllCategoryAndSubCategoryNameQuery, GetAllCategoryAndSubCategoryNameQueryVariables>) {
+        return Apollo.useQuery<GetAllCategoryAndSubCategoryNameQuery, GetAllCategoryAndSubCategoryNameQueryVariables>(GetAllCategoryAndSubCategoryNameDocument, baseOptions);
+      }
+export function useGetAllCategoryAndSubCategoryNameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllCategoryAndSubCategoryNameQuery, GetAllCategoryAndSubCategoryNameQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllCategoryAndSubCategoryNameQuery, GetAllCategoryAndSubCategoryNameQueryVariables>(GetAllCategoryAndSubCategoryNameDocument, baseOptions);
+        }
+export type GetAllCategoryAndSubCategoryNameQueryHookResult = ReturnType<typeof useGetAllCategoryAndSubCategoryNameQuery>;
+export type GetAllCategoryAndSubCategoryNameLazyQueryHookResult = ReturnType<typeof useGetAllCategoryAndSubCategoryNameLazyQuery>;
+export type GetAllCategoryAndSubCategoryNameQueryResult = Apollo.QueryResult<GetAllCategoryAndSubCategoryNameQuery, GetAllCategoryAndSubCategoryNameQueryVariables>;
+export const GetItemDetailsByIdDocument = gql`
+    query GetItemDetailsById($itemId: String!) {
+  getItemDetailsById(itemId: $itemId) {
+    itemId
+    url
+    name
+    brand
+    category
+    isStared
+    subCategory
+    inventory {
+      inventoryId
+      available
+      price
+      discount
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetItemDetailsByIdQuery__
+ *
+ * To run a query within a React component, call `useGetItemDetailsByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetItemDetailsByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetItemDetailsByIdQuery({
+ *   variables: {
+ *      itemId: // value for 'itemId'
+ *   },
+ * });
+ */
+export function useGetItemDetailsByIdQuery(baseOptions: Apollo.QueryHookOptions<GetItemDetailsByIdQuery, GetItemDetailsByIdQueryVariables>) {
+        return Apollo.useQuery<GetItemDetailsByIdQuery, GetItemDetailsByIdQueryVariables>(GetItemDetailsByIdDocument, baseOptions);
+      }
+export function useGetItemDetailsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetItemDetailsByIdQuery, GetItemDetailsByIdQueryVariables>) {
+          return Apollo.useLazyQuery<GetItemDetailsByIdQuery, GetItemDetailsByIdQueryVariables>(GetItemDetailsByIdDocument, baseOptions);
+        }
+export type GetItemDetailsByIdQueryHookResult = ReturnType<typeof useGetItemDetailsByIdQuery>;
+export type GetItemDetailsByIdLazyQueryHookResult = ReturnType<typeof useGetItemDetailsByIdLazyQuery>;
+export type GetItemDetailsByIdQueryResult = Apollo.QueryResult<GetItemDetailsByIdQuery, GetItemDetailsByIdQueryVariables>;
 export const LoginUserDocument = gql`
     mutation LoginUser($email: String!, $password: String!) {
   loginUser(email: $email, password: $password) {
@@ -612,6 +854,40 @@ export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions
 export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
 export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
 export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
+export const GetAllSubCategoriesWithCategoryDocument = gql`
+    query getAllSubCategoriesWithCategory {
+  getAllSubCategoriesWithCategory {
+    category
+    subCategory
+    image
+  }
+}
+    `;
+
+/**
+ * __useGetAllSubCategoriesWithCategoryQuery__
+ *
+ * To run a query within a React component, call `useGetAllSubCategoriesWithCategoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllSubCategoriesWithCategoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllSubCategoriesWithCategoryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllSubCategoriesWithCategoryQuery(baseOptions?: Apollo.QueryHookOptions<GetAllSubCategoriesWithCategoryQuery, GetAllSubCategoriesWithCategoryQueryVariables>) {
+        return Apollo.useQuery<GetAllSubCategoriesWithCategoryQuery, GetAllSubCategoriesWithCategoryQueryVariables>(GetAllSubCategoriesWithCategoryDocument, baseOptions);
+      }
+export function useGetAllSubCategoriesWithCategoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllSubCategoriesWithCategoryQuery, GetAllSubCategoriesWithCategoryQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllSubCategoriesWithCategoryQuery, GetAllSubCategoriesWithCategoryQueryVariables>(GetAllSubCategoriesWithCategoryDocument, baseOptions);
+        }
+export type GetAllSubCategoriesWithCategoryQueryHookResult = ReturnType<typeof useGetAllSubCategoriesWithCategoryQuery>;
+export type GetAllSubCategoriesWithCategoryLazyQueryHookResult = ReturnType<typeof useGetAllSubCategoriesWithCategoryLazyQuery>;
+export type GetAllSubCategoriesWithCategoryQueryResult = Apollo.QueryResult<GetAllSubCategoriesWithCategoryQuery, GetAllSubCategoriesWithCategoryQueryVariables>;
 export const UserDetailsDocument = gql`
     query UserDetails {
   getUserDetails {

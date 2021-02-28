@@ -25,7 +25,7 @@ export interface CustomCardProps extends CommonCardProps {
     // price?: number;
     // stared?: boolean | undefined | null;
     handleClick: ((event: React.MouseEvent<HTMLDivElement, MouseEvent>, param: string, option?: string) => void);
-    onClickStar?: ((event: React.MouseEvent<HTMLSpanElement, MouseEvent>, param: string) => void);
+    onClickStar?: ((event: React.MouseEvent<HTMLSpanElement, MouseEvent>, param: string, isStared: boolean) => void);
 }
 
 export const CustomCard: React.FC<CustomCardProps> = ({ param, imageUrl, title, description, styleName, hoverable, type, price, stared, handleClick, onClickStar }) => {
@@ -50,9 +50,9 @@ export const CustomCard: React.FC<CustomCardProps> = ({ param, imageUrl, title, 
                     <div className={`${styleName}-body-star`} >
                         {
                             stared ?
-                                <HeartFilled className={`${styleName}-body-star-filled`} onClick={e => { e.stopPropagation(); onClickStar(e, param) }} />
+                                <HeartFilled className={`${styleName}-body-star-filled`} onClick={e => { e.stopPropagation(); onClickStar(e, param, false) }} />
                                 :
-                                <HeartTwoTone onClick={e => { e.stopPropagation(); onClickStar(e, param) }} twoToneColor="#eb2f96" />
+                                <HeartTwoTone onClick={e => { e.stopPropagation(); onClickStar(e, param, true) }} twoToneColor="#eb2f96" />
                         }
                     </div>
                 }

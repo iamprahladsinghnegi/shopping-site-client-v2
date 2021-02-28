@@ -3,40 +3,19 @@ import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import React, { useEffect, useState } from 'react';
 
 // import {placementType } from '/antd/lib/drawer/index';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { NavBreadcrumb } from 'src/components/Breadcrumb/Breadcrumb';
 import { CustomCard } from 'src/components/CustomCard/CustomCard';
 import { CheckCircleTwoTone } from '@ant-design/icons';
 
 import './index.scss';
 import { valueType } from 'antd/lib/statistic/utils';
+import { useGetAllItemIdsBySubCategoryQuery, useGetItemDetailsByIdQuery } from 'src/generated/graphql';
+import { ItemView } from 'src/components/ItemView/ItemView';
 
 interface ItemsListRouterProps {
     category: string
 }
-
-let tempDataConst = [
-    { id: "0x123g1j3hj21g3j21g21ydx1", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans", description: "Men Skinny Fit Jeans", price: 4012, stared: true },
-    { id: "0x123g1j3hj21g3j21g21ydx11", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "Here & Now Jeans", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx12", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-2", description: "Men Skinny Fit Jeans", price: 4012, stared: true },
-    { id: "0x123g1j3hj21g3j21g21ydx13", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-3", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx14", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-4", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx15", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-5", description: "Men Skinny Fit Jeans", price: 4012, stared: true },
-    { id: "0x123g1j3hj21g3j21g21ydx16", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-6", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx17", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-7", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx18", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-8", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx19", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-9", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx110", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-10", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx111", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-11", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx110", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-10", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx111", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-11", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx110", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-10", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx111", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-11", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx110", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-10", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx111", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-11", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx110", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-10", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-    { id: "0x123g1j3hj21g3j21g21ydx111", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "HRX Jeans-11", description: "Men Skinny Fit Jeans", price: 4012, stared: false },
-]
 interface ITempData {
     id: string;
     imageUrl: string;
@@ -47,7 +26,9 @@ interface ITempData {
 }
 
 export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
-    const [isFetching, setIsFetching] = useState<boolean>(false)
+    const history = useHistory();
+    const { pathname } = useLocation();
+    const subCategory = pathname.split('/')[2]
     const [filterColor, setFilterColor] = useState<Array<string | number | boolean>>([]);
     const [filterCategory, setFilterCategory] = useState<Array<string | number | boolean>>([]);
     const [filterDiscount, setFilterDiscount] = useState<Array<string | number | boolean>>([]);
@@ -55,45 +36,43 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
     const [isVisible, setVisible] = useState<boolean | undefined>(false);
     const [drawerType, setDrawerType] = useState<string>('')
     const [sortBy, setSortBy] = useState<valueType>(0)
-    const [tempData, setTempData] = useState<Array<ITempData>>(tempDataConst)
-
-    useEffect(() => {
-        const fetchData = () => {
-            //call API here
-            // setTimeout(() => {
-            //     setIsFetching(false)
-            //     // if API response empty means categorie doesn't exists, redirect to all items page
-            //     // history.replace('/items')
-            // }, 2000)
-        }
-        fetchData();
-    }, [])
-    const id: string = "SAd786ds8a6d8sad7876d8asd";
+    const { data: allitemIds, loading: itemIdsLoader, error: itemIdsError } = useGetAllItemIdsBySubCategoryQuery({ variables: { subCategory } })
     const { category } = useParams<ItemsListRouterProps>();
-    const history = useHistory();
-    if (isFetching) {
-        return <div>loading item details</div>
+
+    if (itemIdsError) {
+        history.replace('/items')
     }
 
-
-    const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string, name?: string): void => {
-        history.push({ pathname: `${category}/${id}$${name}` })
-
+    if (itemIdsLoader || !allitemIds) {
+        return <>Loading data..............</>
     }
-    const handleClickStar = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
-        //add to wish list
-        const originalData = [...tempData]
-        const index: number = tempData.findIndex((v: ITempData) => v.id === id)
-        if (index === -1) {
-            return
-        }
-        const item = originalData[index]
-        originalData.splice(index, 1, {
-            ...item
-        })
-        originalData[index].stared = !tempData[index].stared
-        setTempData(originalData)
-    }
+    // else if (allitemIds && allitemIds.getAllItemIdsBySubCategory) {
+    //     console.log(allitemIds.getAllItemIdsBySubCategory)
+    //     for (let index in allitemIds.getAllItemIdsBySubCategory.itemIds) {
+    //         let itemId = allitemIds.getAllItemIdsBySubCategory.itemIds[index]
+    //         // const {data, loading}  =useGetItemDetailsByIdQuery({variables:{itemId}})
+    //     }
+
+    // }
+
+    // const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string, name?: string): void => {
+    //     history.push({ pathname: `${category}/${id}$${name}` })
+
+    // }
+    // const handleClickStar = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
+    //     //add to wish list
+    //     const originalData = [...tempData]
+    //     const index: number = tempData.findIndex((v: ITempData) => v.id === id)
+    //     if (index === -1) {
+    //         return
+    //     }
+    //     const item = originalData[index]
+    //     originalData.splice(index, 1, {
+    //         ...item
+    //     })
+    //     originalData[index].stared = !tempData[index].stared
+    //     setTempData(originalData)
+    // }
 
     const plainOptions = ['Printed', 'Checks', 'Damge'];
     const categoryOptions = plainOptions.map((item) => {
@@ -322,7 +301,7 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
     </>
 
     const drawerHeader: JSX.Element | string = drawerType === 'sort' ? "SORT BY" : filterHeader
-    const drwaerContent: JSX.Element =
+    const drawerContent: JSX.Element =
         drawerType === 'sort' ?
             <List
                 bordered
@@ -346,7 +325,6 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
                 {filterOptions}
             </div>
 
-    console.log('test', tempData[1])
     return (
         <div className="item-listing">
             <div className="item-listing-breadcrumb" >
@@ -370,16 +348,8 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
 
                         <div className="item-listing-layout-content-main-items">
                             <Row style={{ margin: 0 }} gutter={24}>
-                                {tempData.map(item => {
+                                {/* {tempData.map(item => {
                                     return <Col xs={12} sm={12} md={8} lg={8} xl={6} xxl={4} >
-                                        {/* <Card className="item-listing-layout-content-main-items-card"
-                                            bordered={false}
-                                            hoverable
-                                            cover={<img className={`tem-listing-layout-content-main-items-card-image`} alt={item.title} src={item.imageUrl} />
-                                            }
-                                        >
-                                            <Card.Meta title={item.title} />
-                                        </Card > */}
                                         <CustomCard
                                             type={'item-preview'}
                                             param={item.id}
@@ -392,6 +362,11 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
                                             price={item.price}
                                             stared={item.stared}
                                             description={item.description} />
+                                    </Col>
+                                })} */}
+                                {allitemIds.getAllItemIdsBySubCategory.itemIds.map(item => {
+                                    return <Col xs={12} sm={12} md={8} lg={8} xl={6} xxl={4} >
+                                        <ItemView itemId={item} category={category} />
                                     </Col>
                                 })}
                             </Row>
@@ -419,7 +394,7 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
                 headerStyle={{ background: "lightblue" }}
                 height={300}
             >
-                {drwaerContent}
+                {drawerContent}
             </Drawer>
         </div>
     );

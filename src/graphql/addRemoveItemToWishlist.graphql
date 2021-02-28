@@ -1,0 +1,3 @@
+mutation AddRemoveItemToWishlist($itemId: String!, $action: AddOrRemove!) {
+ addRemoveItemToWishlist(itemId:$itemId ,action:$action) 
+}

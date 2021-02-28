@@ -1,0 +1,17 @@
+query GetItemDetailsById($itemId:String!){
+  getItemDetailsById(itemId:$itemId){
+    itemId
+    url
+    name
+    brand
+    category
+    isStared
+    subCategory
+    inventory{
+      inventoryId
+      available
+      price
+      discount
+    }
+  }
+}
