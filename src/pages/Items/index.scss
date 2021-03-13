@@ -55,30 +55,60 @@
         }
         &-content{
             // margin-top: 54px;
+            padding:0 120px;
             height: 88.5vh;
             overflow-y: auto;
             &-preview{
-                &-carousel{
-                    &-image{
-                        height: 50vh;
-                        color: #fff;
-                        line-height: 40vh;
-                        text-align: center;
-                        background: #364d79,
+            .ant-carousel .slick-prev,
+            .ant-carousel .slick-next {
+                color: unset;
+                font-size: unset;
+            }
+            .ant-carousel .slick-prev:hover,
+            .ant-carousel .slick-next:hover,
+            .ant-carousel .slick-prev:focus,
+            .ant-carousel .slick-next:focus {
+              color: unset;
+            }
+            .ant-carousel .slick-slider{
+                padding: 0 25px;
+            }
+            .ant-carousel .slick-dots-bottom{
+                display: none !important;
+            }
+            &-carousel{
+                background: white;
+                &-imageview{
+                    img{
+                        width: auto;
+                        height: 80vh;
+                        object-fit: fill;
+                        margin-left: auto;
+                        margin-right: auto;
                     }
-                    .slick-dots{
-                        &-bottom {
-                            bottom: 0;
-                            position: inherit;;
-                            margin: 12px auto 12px auto;
-                        }
-                        li{
-                            background: red;
-                        }
-                        li.slick-active button{
-                            background: black;
-                        }
-                    }
+                }
+                .slick-prev{
+                    left: 25px;
+                    z-index: 1;
+                }
+                .slick-next{
+                    right: 25px;
+                    z-index: 1;
+                }
+                
+                // .slick-dots{
+                //     &-bottom {
+                //         bottom: 0;
+                //         position: inherit;;
+                //         margin: 12px auto 12px auto;
+                //     }
+                //     li{
+                //         background: red;
+                //     }
+                //     li.slick-active button{
+                //         background: black;
+                //     }
+                // }
                 }
             }
             &-description{
@@ -333,19 +363,26 @@
             display: none;
         }
         &-content{
+            .ant-carousel .slick-slider{
+                padding:0;
+            }
+            padding: 0;
             margin-top: 0;
             height: 93.5vh; //to remove white space from bottom (breadcrumb hidden)
             &-col1{
                 padding: 0 !important;
             }
             &-preview{
+                .ant-carousel .slick-dots-bottom{
+                    display: flex !important;
+                }
                 &-carousel{
-                    &-image{
-                        height: 50vh;
-                        color: #fff;
-                        line-height: 40vh;
-                        text-align: center;
-                        background: #364d79,
+                    &-imageview {
+                        img{
+                            height: 50vh;
+                            width: 100%;
+                            object-fit: cover;
+                        }
                     }
                     .slick-dots{
                         &-bottom {

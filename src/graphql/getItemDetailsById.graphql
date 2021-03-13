@@ -9,7 +9,7 @@ query GetItemDetailsById($itemId:String!){
     subCategory
     inventory{
       inventoryId
-      available
+      # available
       price
       discount
     }

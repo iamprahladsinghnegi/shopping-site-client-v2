@@ -12,6 +12,7 @@ import './index.scss';
 import { valueType } from 'antd/lib/statistic/utils';
 import { useGetAllItemIdsBySubCategoryQuery, useGetItemDetailsByIdQuery } from 'src/generated/graphql';
 import { ItemView } from 'src/components/ItemView/ItemView';
+import { SORT_OPTIONS } from '../../constants/AppConstanat'
 
 interface ItemsListRouterProps {
     category: string
@@ -36,8 +37,15 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
     const [isVisible, setVisible] = useState<boolean | undefined>(false);
     const [drawerType, setDrawerType] = useState<string>('')
     const [sortBy, setSortBy] = useState<valueType>(0)
-    const { data: allitemIds, loading: itemIdsLoader, error: itemIdsError } = useGetAllItemIdsBySubCategoryQuery({ variables: { subCategory } })
     const { category } = useParams<ItemsListRouterProps>();
+    let fillterOption = {
+        sort: SORT_OPTIONS[sortBy],
+        color: [],
+        price: [],
+        category: [],
+        discount: []
+    }
+    const { data: allitemIds, loading: itemIdsLoader, error: itemIdsError } = useGetAllItemIdsBySubCategoryQuery({ variables: { subCategory } })
 
     if (itemIdsError) {
         history.replace('/items')
@@ -46,33 +54,6 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
     if (itemIdsLoader || !allitemIds) {
         return <>Loading data..............</>
     }
-    // else if (allitemIds && allitemIds.getAllItemIdsBySubCategory) {
-    //     console.log(allitemIds.getAllItemIdsBySubCategory)
-    //     for (let index in allitemIds.getAllItemIdsBySubCategory.itemIds) {
-    //         let itemId = allitemIds.getAllItemIdsBySubCategory.itemIds[index]
-    //         // const {data, loading}  =useGetItemDetailsByIdQuery({variables:{itemId}})
-    //     }
-
-    // }
-
-    // const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string, name?: string): void => {
-    //     history.push({ pathname: `${category}/${id}$${name}` })
-
-    // }
-    // const handleClickStar = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
-    //     //add to wish list
-    //     const originalData = [...tempData]
-    //     const index: number = tempData.findIndex((v: ITempData) => v.id === id)
-    //     if (index === -1) {
-    //         return
-    //     }
-    //     const item = originalData[index]
-    //     originalData.splice(index, 1, {
-    //         ...item
-    //     })
-    //     originalData[index].stared = !tempData[index].stared
-    //     setTempData(originalData)
-    // }
 
     const plainOptions = ['Printed', 'Checks', 'Damge'];
     const categoryOptions = plainOptions.map((item) => {
@@ -277,6 +258,7 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
     };
 
     const handleChange = (value: valueType): void => {
+        console.log(value)
         if (sortBy === value) {
             return
         }
@@ -286,14 +268,13 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
         }
     }
 
-    const sortPlainOption = ["What's New", "Popularity", "Better Discount", "Price: High to Low", "Price: Low to High"]
     const sortOptions: JSX.Element = <>
         <text>
             SORT BY :
         </text>
         <Select value={sortBy} style={{ width: 200 }} onChange={handleChange}>
             {
-                sortPlainOption.map((item, index) => {
+                SORT_OPTIONS.map((item, index) => {
                     return <Select.Option value={index}>{item}</Select.Option>
                 })
             }
@@ -305,7 +286,7 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
         drawerType === 'sort' ?
             <List
                 bordered
-                dataSource={sortPlainOption}
+                dataSource={SORT_OPTIONS}
                 renderItem={(item, index) => (
                     <List.Item onClick={e => { handleChange(index) }}>
                         {item}

@@ -21,10 +21,11 @@ export type Query = {
   bye: Scalars['String'];
   geAllItemsIds: ItemIdsResponse;
   getItemDetailsById: ItemResponse;
+  getItemDetails: ItemDetailsResponse;
   getAllCategoryAndSubCategoryName: Array<CategoryAndSubCategory>;
   getAllSubCategoriesWithCategory: Array<SubCategoryWithCategoryResponse>;
   getAllItemIdsBySubCategory: ItemIdsResponse;
-  getInventoryLevelByInventoryId: Scalars['Float'];
+  getInventoryLevelByInventoryId: Array<AvailableObject>;
   getCartDetailsByCartId: CartResponse;
   getCartDetailsByUserId: CartResponse;
   getLatestOffers: Offers;
@@ -32,6 +33,11 @@ export type Query = {
 
 
 export type QueryGetItemDetailsByIdArgs = {
+  itemId: Scalars['String'];
+};
+
+
+export type QueryGetItemDetailsArgs = {
   itemId: Scalars['String'];
 };
 
@@ -98,9 +104,37 @@ export type ItemResponse = {
 export type Inentory = {
   __typename?: 'inentory';
   inventoryId: Scalars['String'];
-  available: Scalars['Int'];
+  available: Array<AvailableObject>;
   price: Scalars['Int'];
   discount?: Maybe<Scalars['Int']>;
+};
+
+export type AvailableObject = {
+  __typename?: 'availableObject';
+  name: Scalars['String'];
+  quantity?: Maybe<Scalars['Int']>;
+};
+
+export type ItemDetailsResponse = {
+  __typename?: 'ItemDetailsResponse';
+  itemId: Scalars['String'];
+  name: Scalars['String'];
+  brand: Scalars['String'];
+  isStared: Scalars['Boolean'];
+  category: Scalars['String'];
+  subCategory: Scalars['String'];
+  inventory: Inentory;
+  images: Array<Scalars['String']>;
+  description: DescriptionObject;
+};
+
+export type DescriptionObject = {
+  __typename?: 'DescriptionObject';
+  details: Scalars['String'];
+  size: Scalars['String'];
+  fit: Scalars['String'];
+  materials: Scalars['String'];
+  care: Scalars['String'];
 };
 
 export type CategoryAndSubCategory = {
@@ -169,11 +203,13 @@ export type MutationRegisterUserArgs = {
 
 
 export type MutationAddItemArgs = {
-  url: Scalars['String'];
   name: Scalars['String'];
-  category: Scalars['String'];
-  subCategory: Scalars['String'];
+  brand: Scalars['String'];
+  categoryInfo: NameWithImageInput;
+  subCategoryInfo: NameWithImageInput;
+  images: Array<Scalars['String']>;
   inventoryInfo: InventoryInput;
+  description: DescriptionInput;
 };
 
 
@@ -185,18 +221,21 @@ export type MutationAddRemoveItemToWishlistArgs = {
 
 export type MutationUpdatedInventoryByInventoryIdArgs = {
   quantity: Scalars['Float'];
+  name: Scalars['String'];
   inventoryId: Scalars['String'];
 };
 
 
 export type MutationIncrementInventoryByInventoryIdArgs = {
   quantity: Scalars['Float'];
+  name: Scalars['String'];
   inventoryId: Scalars['String'];
 };
 
 
 export type MutationDecrementInventoryByInventoryIdArgs = {
   quantity: Scalars['Float'];
+  name: Scalars['String'];
   inventoryId: Scalars['String'];
 };
 
@@ -278,10 +317,28 @@ export type RegisterSuccess = {
   userId: Scalars['String'];
 };
 
+export type NameWithImageInput = {
+  name: Scalars['String'];
+  image: Scalars['String'];
+};
+
 export type InventoryInput = {
-  available: Scalars['Int'];
+  available: Array<AvailableInput>;
   price: Scalars['Int'];
   discount?: Maybe<Scalars['Int']>;
+};
+
+export type AvailableInput = {
+  name: Scalars['String'];
+  quantity?: Maybe<Scalars['Int']>;
+};
+
+export type DescriptionInput = {
+  details: Scalars['String'];
+  size: Scalars['String'];
+  fit: Scalars['String'];
+  materials: Scalars['String'];
+  care: Scalars['String'];
 };
 
 /** add or remove item form wishlist */
@@ -291,10 +348,12 @@ export enum AddOrRemove {
 }
 
 export type AddItemMutationVariables = Exact<{
-  url: Scalars['String'];
   name: Scalars['String'];
-  category: Scalars['String'];
-  subCategory: Scalars['String'];
+  brand: Scalars['String'];
+  category: NameWithImageInput;
+  subCategory: NameWithImageInput;
+  images: Array<Scalars['String']> | Scalars['String'];
+  description: DescriptionInput;
   inventoryInfo: InventoryInput;
 }>;
 
@@ -347,6 +406,30 @@ export type GetAllCategoryAndSubCategoryNameQuery = (
   )> }
 );
 
+export type GetItemDetailsQueryVariables = Exact<{
+  itemId: Scalars['String'];
+}>;
+
+
+export type GetItemDetailsQuery = (
+  { __typename?: 'Query' }
+  & { getItemDetails: (
+    { __typename?: 'ItemDetailsResponse' }
+    & Pick<ItemDetailsResponse, 'itemId' | 'name' | 'brand' | 'isStared' | 'category' | 'subCategory' | 'images'>
+    & { inventory: (
+      { __typename?: 'inentory' }
+      & Pick<Inentory, 'inventoryId' | 'discount' | 'price'>
+      & { available: Array<(
+        { __typename?: 'availableObject' }
+        & Pick<AvailableObject, 'name' | 'quantity'>
+      )> }
+    ), description: (
+      { __typename?: 'DescriptionObject' }
+      & Pick<DescriptionObject, 'details' | 'size' | 'fit' | 'materials' | 'care'>
+    ) }
+  ) }
+);
+
 export type GetItemDetailsByIdQueryVariables = Exact<{
   itemId: Scalars['String'];
 }>;
@@ -359,7 +442,7 @@ export type GetItemDetailsByIdQuery = (
     & Pick<ItemResponse, 'itemId' | 'url' | 'name' | 'brand' | 'category' | 'isStared' | 'subCategory'>
     & { inventory: (
       { __typename?: 'inentory' }
-      & Pick<Inentory, 'inventoryId' | 'available' | 'price' | 'discount'>
+      & Pick<Inentory, 'inventoryId' | 'price' | 'discount'>
     ) }
   ) }
 );
@@ -468,12 +551,14 @@ export type UserDetailsQuery = (
 
 
 export const AddItemDocument = gql`
-    mutation addItem($url: String!, $name: String!, $category: String!, $subCategory: String!, $inventoryInfo: inventoryInput!) {
+    mutation addItem($name: String!, $brand: String!, $category: NameWithImageInput!, $subCategory: NameWithImageInput!, $images: [String!]!, $description: DescriptionInput!, $inventoryInfo: inventoryInput!) {
   addItem(
-    url: $url
     name: $name
-    category: $category
-    subCategory: $subCategory
+    brand: $brand
+    categoryInfo: $category
+    subCategoryInfo: $subCategory
+    images: $images
+    description: $description
     inventoryInfo: $inventoryInfo
   )
 }
@@ -493,10 +578,12 @@ export type AddItemMutationFn = Apollo.MutationFunction<AddItemMutation, AddItem
  * @example
  * const [addItemMutation, { data, loading, error }] = useAddItemMutation({
  *   variables: {
- *      url: // value for 'url'
  *      name: // value for 'name'
+ *      brand: // value for 'brand'
  *      category: // value for 'category'
  *      subCategory: // value for 'subCategory'
+ *      images: // value for 'images'
+ *      description: // value for 'description'
  *      inventoryInfo: // value for 'inventoryInfo'
  *   },
  * });
@@ -635,6 +722,61 @@ export function useGetAllCategoryAndSubCategoryNameLazyQuery(baseOptions?: Apoll
 export type GetAllCategoryAndSubCategoryNameQueryHookResult = ReturnType<typeof useGetAllCategoryAndSubCategoryNameQuery>;
 export type GetAllCategoryAndSubCategoryNameLazyQueryHookResult = ReturnType<typeof useGetAllCategoryAndSubCategoryNameLazyQuery>;
 export type GetAllCategoryAndSubCategoryNameQueryResult = Apollo.QueryResult<GetAllCategoryAndSubCategoryNameQuery, GetAllCategoryAndSubCategoryNameQueryVariables>;
+export const GetItemDetailsDocument = gql`
+    query GetItemDetails($itemId: String!) {
+  getItemDetails(itemId: $itemId) {
+    itemId
+    name
+    brand
+    isStared
+    category
+    subCategory
+    inventory {
+      inventoryId
+      available {
+        name
+        quantity
+      }
+      discount
+      price
+    }
+    images
+    description {
+      details
+      size
+      fit
+      materials
+      care
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetItemDetailsQuery__
+ *
+ * To run a query within a React component, call `useGetItemDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetItemDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetItemDetailsQuery({
+ *   variables: {
+ *      itemId: // value for 'itemId'
+ *   },
+ * });
+ */
+export function useGetItemDetailsQuery(baseOptions: Apollo.QueryHookOptions<GetItemDetailsQuery, GetItemDetailsQueryVariables>) {
+        return Apollo.useQuery<GetItemDetailsQuery, GetItemDetailsQueryVariables>(GetItemDetailsDocument, baseOptions);
+      }
+export function useGetItemDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetItemDetailsQuery, GetItemDetailsQueryVariables>) {
+          return Apollo.useLazyQuery<GetItemDetailsQuery, GetItemDetailsQueryVariables>(GetItemDetailsDocument, baseOptions);
+        }
+export type GetItemDetailsQueryHookResult = ReturnType<typeof useGetItemDetailsQuery>;
+export type GetItemDetailsLazyQueryHookResult = ReturnType<typeof useGetItemDetailsLazyQuery>;
+export type GetItemDetailsQueryResult = Apollo.QueryResult<GetItemDetailsQuery, GetItemDetailsQueryVariables>;
 export const GetItemDetailsByIdDocument = gql`
     query GetItemDetailsById($itemId: String!) {
   getItemDetailsById(itemId: $itemId) {
@@ -647,7 +789,6 @@ export const GetItemDetailsByIdDocument = gql`
     subCategory
     inventory {
       inventoryId
-      available
       price
       discount
     }

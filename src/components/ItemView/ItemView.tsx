@@ -26,9 +26,11 @@ export const ItemView: React.FC<ItemViewProps> = ({ itemId, category }) => {
             action = AddOrRemove['Add']
         }
         addOrRemoveItem({ variables: { itemId: id, action } }).then(isUpdated => {
-            if (!isUpdated || isUpdated.errors) {
+            if (!isUpdated || isUpdated.errors || !isUpdated.data) {
                 message.info('Unable to add to wishlist')
-            } else if (isUpdated.data?.addRemoveItemToWishlist) {
+            } else if (isUpdated.data.addRemoveItemToWishlist === false) {
+                message.info('Unable to add to wishlist')
+            } else {
                 console.log('done', isUpdated)
                 refetch();
             }

@@ -1,3 +1,19 @@
-mutation addItem($url:String!, $name:String!, $category:String!, $subCategory:String!, $inventoryInfo:inventoryInput!) {
-  addItem(url:$url, name:$name, category:$category, subCategory:$subCategory, inventoryInfo:$inventoryInfo) 
+mutation addItem(
+$name: String!,
+$brand: String!,
+$category:NameWithImageInput!,
+$subCategory: NameWithImageInput!,
+$images:[String!]!,
+$description: DescriptionInput!,
+$inventoryInfo: inventoryInput!
+){
+	addItem(
+  	name: $name,
+    brand: $brand,
+    categoryInfo: $category,
+    subCategoryInfo: $subCategory,
+    images:$images,
+    description:$description,
+    inventoryInfo:$inventoryInfo
+  )
 }

@@ -1,0 +1,31 @@
+query GetItemDetails(
+  $itemId: String!
+){
+  getItemDetails(
+    itemId:$itemId
+  ){
+    itemId
+    name
+    brand
+    isStared
+    category
+    subCategory
+    inventory{
+      inventoryId
+      available{
+        name
+        quantity
+      }
+    	discount
+      price
+    }
+    images
+    description{
+      details
+      size
+      fit
+      materials
+      care
+    }
+  }
+}
