@@ -1,29 +1,19 @@
-import { Col, Layout, PageHeader, Row, Checkbox, Divider, Affix, Drawer, Select, List, Card } from 'antd';
+import { Col, Layout, PageHeader, Row, Checkbox, Divider, Affix, Drawer, Select, List } from 'antd';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-// import {placementType } from '/antd/lib/drawer/index';
 import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { NavBreadcrumb } from 'src/components/Breadcrumb/Breadcrumb';
-import { CustomCard } from 'src/components/CustomCard/CustomCard';
 import { CheckCircleTwoTone } from '@ant-design/icons';
 
 import './index.scss';
 import { valueType } from 'antd/lib/statistic/utils';
-import { useGetAllItemIdsBySubCategoryQuery, useGetItemDetailsByIdQuery } from 'src/generated/graphql';
+import { useGetAllItemIdsBySubCategoryWithFilterQuery } from 'src/generated/graphql';
 import { ItemView } from 'src/components/ItemView/ItemView';
 import { SORT_OPTIONS } from '../../constants/AppConstanat'
 
 interface ItemsListRouterProps {
     category: string
-}
-interface ITempData {
-    id: string;
-    imageUrl: string;
-    title: string;
-    description: string;
-    price: number;
-    stared: boolean;
 }
 
 export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
@@ -35,17 +25,17 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
     const [filterDiscount, setFilterDiscount] = useState<Array<string | number | boolean>>([]);
     const [filterPrice, setFilterPrice] = useState<Array<string | number | boolean>>([]);
     const [isVisible, setVisible] = useState<boolean | undefined>(false);
-    const [drawerType, setDrawerType] = useState<string>('')
-    const [sortBy, setSortBy] = useState<valueType>(0)
+    const [drawerType, setDrawerType] = useState<string>('');
+    const [sortBy, setSortBy] = useState<valueType>(0);
     const { category } = useParams<ItemsListRouterProps>();
     let fillterOption = {
-        sort: SORT_OPTIONS[sortBy],
+        sort: SORT_OPTIONS[sortBy].key,
         color: [],
         price: [],
         category: [],
         discount: []
     }
-    const { data: allitemIds, loading: itemIdsLoader, error: itemIdsError } = useGetAllItemIdsBySubCategoryQuery({ variables: { subCategory } })
+    const { data: allitemIds, loading: itemIdsLoader, error: itemIdsError } = useGetAllItemIdsBySubCategoryWithFilterQuery({ variables: { subCategory, filterOptions: fillterOption } })
 
     if (itemIdsError) {
         history.replace('/items')
@@ -275,7 +265,7 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
         <Select value={sortBy} style={{ width: 200 }} onChange={handleChange}>
             {
                 SORT_OPTIONS.map((item, index) => {
-                    return <Select.Option value={index}>{item}</Select.Option>
+                    return <Select.Option value={index}>{item.label}</Select.Option>
                 })
             }
         </Select>
@@ -289,7 +279,7 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
                 dataSource={SORT_OPTIONS}
                 renderItem={(item, index) => (
                     <List.Item onClick={e => { handleChange(index) }}>
-                        {item}
+                        {item.label}
                         {sortBy === index &&
                             <div style={{
                                 float: "right",
@@ -345,7 +335,7 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
                                             description={item.description} />
                                     </Col>
                                 })} */}
-                                {allitemIds.getAllItemIdsBySubCategory.itemIds.map(item => {
+                                {allitemIds.getAllItemIdsBySubCategoryWithFilter.itemIds.map(item => {
                                     return <Col xs={12} sm={12} md={8} lg={8} xl={6} xxl={4} >
                                         <ItemView itemId={item} category={category} />
                                     </Col>

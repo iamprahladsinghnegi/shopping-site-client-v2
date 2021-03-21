@@ -26,6 +26,11 @@ query GetItemDetails(
       fit
       materials
       care
+      extra
+      specifications{
+        key
+        value
+      }
     }
   }
 }

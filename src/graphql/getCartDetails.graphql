@@ -1,0 +1,11 @@
+query GetCartDetails{
+getCartDetails{
+cartId,
+  items{
+    itemId,
+    size,
+    quantity
+  }
+  count
+}
+}

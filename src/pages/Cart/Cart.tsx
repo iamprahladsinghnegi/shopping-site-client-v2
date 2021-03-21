@@ -1,37 +1,36 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from 'src/redux/reducers';
-import { CartState } from 'src/redux/types/cart';
-import { addItem } from 'src/redux/actions/carts';
-
+import { Col, Row, Skeleton } from 'antd';
+import React from 'react';
+import { CartItem } from 'src/components/CartItem/CartItem';
+import { useGetCartDetailsQuery } from 'src/generated/graphql';
+import './index.scss';
 interface CartProps {
 
 }
 
 export const Cart: React.FC<CartProps> = ({ }) => {
-    const items = useSelector<RootState, CartState['items']>(
-        (state) => state.cart.items
-    );
-    console.log(items)
-    const dispatch = useDispatch();
-    const addNewItem = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        let item = {
-            id: "123",
-            name: 'new',
-            quantity: 2,
-            price: 100,
-            timestamp: 3
-        }
-        dispatch(addItem(item))
+    const { data: cartData, loading, error } = useGetCartDetailsQuery();
+
+    if (error) {
+        //navigate to home
+        console.log(error);
+    }
+
+    console.log(cartData);
+    if (loading || !cartData?.getCartDetails) {
+        return <Skeleton />
     }
     return (
-        <div>
-            cart details
-            {items.map(item => {
-                return <p>{item.id}</p>
-            })}
+        <div className="cart">
+            <Row gutter={24}>
+                <Col span={16} >
+                    {cartData.getCartDetails.items.map((ele, index) => {
+                        return <CartItem />
+                    })}
+                </Col>
+                <Col span={8}>
 
-            <button onClick={e => addNewItem(e)}>add new</button>
+                </Col>
+            </Row>
         </div>
     );
 }

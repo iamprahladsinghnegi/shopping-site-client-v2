@@ -1,0 +1,11 @@
+query GetAllItemIdsBySubCategoryWithFilter(
+  $subCategory: String!
+	$filterOptions: FilterOptions!
+){
+  getAllItemIdsBySubCategoryWithFilter(
+    subCategory:$subCategory,
+  	filterOptions:$filterOptions
+  ){
+itemIds,
+  count}
+}

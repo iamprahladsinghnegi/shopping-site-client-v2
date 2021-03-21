@@ -1,0 +1,85 @@
+.cartItem{
+    .ant-card-actions{
+        button{
+            background: transparent;
+            border: 0;
+            outline: none;
+        }
+    }
+    &-content{
+        img{
+            object-fit: cover;
+            height: 15rem;
+            max-width: 15rem;
+        }
+        &-item{
+            display: flex;
+            justify-content: space-between;
+            &-description{
+                h3{
+                    color: #282c3f;
+                    font-weight: 500;
+                    line-height: 1;
+                    font-size: 18px;
+                }
+                &-name{
+                    color: #535665;
+                    margin-bottom: 0;
+                    opacity: .8;
+                    font-weight: 400;
+                    font-size: 16px;
+                }
+                &-seller{
+                    color: #aeaeae !important;
+                    font-size: 14px !important;
+
+                }
+                &-action{
+                    button{
+                        border: 0;
+                        outline: none;
+                        margin-left: 12px;
+                    }
+
+                }
+            }
+            &-price{
+                text-align: right;
+                &-amount{
+                    font-size: 18px;
+                    font-weight: 500;
+                    line-height: 1;
+                    cursor: pointer;
+                    color: black;
+                    margin-bottom: 5px;
+                }
+                &-discount{
+                    font-size: 16px;
+                    &-line{
+                        text-decoration: line-through;
+                    }
+                    &-value{
+                        margin-left: 5px;
+                        color: #03a685;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.numberSlider{
+    position: relative;
+    margin-top: 30px;
+    padding: 0  30px;
+    &-left{
+        position: absolute;
+        left: 0;
+        top:-5px
+    }
+    &-right{
+        position: absolute;
+        right: 0;
+        top:-5px
+    }
+}

@@ -10,7 +10,7 @@ export interface ItemViewProps {
 }
 
 export const ItemView: React.FC<ItemViewProps> = ({ itemId, category }) => {
-    const { data: item, loading: isLoading, refetch } = useGetItemDetailsByIdQuery({ variables: { itemId } })
+    const { data: item, loading: isLoading, refetch } = useGetItemDetailsByIdQuery({ fetchPolicy: 'network-only', variables: { itemId } })
     const [addOrRemoveItem] = useAddRemoveItemToWishlistMutation();
     const history = useHistory();
     const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string, name?: string): void => {

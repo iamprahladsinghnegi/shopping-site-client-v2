@@ -25,9 +25,11 @@ export type Query = {
   getAllCategoryAndSubCategoryName: Array<CategoryAndSubCategory>;
   getAllSubCategoriesWithCategory: Array<SubCategoryWithCategoryResponse>;
   getAllItemIdsBySubCategory: ItemIdsResponse;
+  getAllItemIdsBySubCategoryWithFilter: ItemIdsResponse;
   getInventoryLevelByInventoryId: Array<AvailableObject>;
   getCartDetailsByCartId: CartResponse;
   getCartDetailsByUserId: CartResponse;
+  getCartDetails: CartResponse;
   getLatestOffers: Offers;
 };
 
@@ -44,6 +46,12 @@ export type QueryGetItemDetailsArgs = {
 
 export type QueryGetAllItemIdsBySubCategoryArgs = {
   subCategory: Scalars['String'];
+};
+
+
+export type QueryGetAllItemIdsBySubCategoryWithFilterArgs = {
+  subCategory: Scalars['String'];
+  filterOptions: FilterOptions;
 };
 
 
@@ -80,6 +88,7 @@ export type CartResponse = {
 export type CartItem = {
   __typename?: 'CartItem';
   itemId: Scalars['String'];
+  size: Scalars['String'];
   quantity: Scalars['Int'];
 };
 
@@ -135,6 +144,14 @@ export type DescriptionObject = {
   fit: Scalars['String'];
   materials: Scalars['String'];
   care: Scalars['String'];
+  specifications?: Maybe<Array<SpecificationsObject>>;
+  extra?: Maybe<Scalars['String']>;
+};
+
+export type SpecificationsObject = {
+  __typename?: 'SpecificationsObject';
+  key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type CategoryAndSubCategory = {
@@ -149,6 +166,23 @@ export type SubCategoryWithCategoryResponse = {
   subCategory: Scalars['String'];
   image: Scalars['String'];
 };
+
+export type FilterOptions = {
+  sort: SortFilter;
+  color: Array<Scalars['String']>;
+  price: Array<Scalars['String']>;
+  category: Array<Scalars['String']>;
+  discount: Array<Scalars['String']>;
+};
+
+/** For Sort the itemIds */
+export enum SortFilter {
+  New = 'NEW',
+  Popularity = 'POPULARITY',
+  Discount = 'DISCOUNT',
+  Costly = 'COSTLY',
+  Budget = 'BUDGET'
+}
 
 export type Offers = {
   __typename?: 'offers';
@@ -177,8 +211,9 @@ export type Mutation = {
   updatedInventoryByInventoryId: Scalars['Boolean'];
   incrementInventoryByInventoryId: Scalars['Boolean'];
   decrementInventoryByInventoryId: Scalars['Boolean'];
-  AddToCart: Scalars['Boolean'];
   adjustItemQyantity: Scalars['Boolean'];
+  createCartWithItem: Scalars['Boolean'];
+  addToCart: Scalars['Boolean'];
   addOffer: Scalars['String'];
 };
 
@@ -240,18 +275,23 @@ export type MutationDecrementInventoryByInventoryIdArgs = {
 };
 
 
-export type MutationAddToCartArgs = {
-  cartId: Scalars['String'];
-  itemId: Scalars['String'];
-  quantity?: Maybe<Scalars['Int']>;
-  userId?: Maybe<Scalars['String']>;
-};
-
-
 export type MutationAdjustItemQyantityArgs = {
   cartId: Scalars['String'];
   itemId: Scalars['String'];
   quantity?: Maybe<Scalars['Int']>;
+};
+
+
+export type MutationCreateCartWithItemArgs = {
+  quantity: Scalars['String'];
+  itemId: Scalars['String'];
+};
+
+
+export type MutationAddToCartArgs = {
+  quantity?: Maybe<Scalars['Float']>;
+  size: Scalars['String'];
+  itemId: Scalars['String'];
 };
 
 
@@ -339,6 +379,13 @@ export type DescriptionInput = {
   fit: Scalars['String'];
   materials: Scalars['String'];
   care: Scalars['String'];
+  specifications?: Maybe<Array<SpecificationsInput>>;
+  extra?: Maybe<Scalars['String']>;
+};
+
+export type SpecificationsInput = {
+  key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 /** add or remove item form wishlist */
@@ -374,6 +421,18 @@ export type AddRemoveItemToWishlistMutation = (
   & Pick<Mutation, 'addRemoveItemToWishlist'>
 );
 
+export type AddToCartMutationVariables = Exact<{
+  itemId: Scalars['String'];
+  quantity: Scalars['Float'];
+  size: Scalars['String'];
+}>;
+
+
+export type AddToCartMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addToCart'>
+);
+
 export type GetAllItemIdsBySubCategoryQueryVariables = Exact<{
   subCategory: Scalars['String'];
 }>;
@@ -406,6 +465,35 @@ export type GetAllCategoryAndSubCategoryNameQuery = (
   )> }
 );
 
+export type GetAllItemIdsBySubCategoryWithFilterQueryVariables = Exact<{
+  subCategory: Scalars['String'];
+  filterOptions: FilterOptions;
+}>;
+
+
+export type GetAllItemIdsBySubCategoryWithFilterQuery = (
+  { __typename?: 'Query' }
+  & { getAllItemIdsBySubCategoryWithFilter: (
+    { __typename?: 'ItemIdsResponse' }
+    & Pick<ItemIdsResponse, 'itemIds' | 'count'>
+  ) }
+);
+
+export type GetCartDetailsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCartDetailsQuery = (
+  { __typename?: 'Query' }
+  & { getCartDetails: (
+    { __typename?: 'CartResponse' }
+    & Pick<CartResponse, 'cartId' | 'count'>
+    & { items: Array<(
+      { __typename?: 'CartItem' }
+      & Pick<CartItem, 'itemId' | 'size' | 'quantity'>
+    )> }
+  ) }
+);
+
 export type GetItemDetailsQueryVariables = Exact<{
   itemId: Scalars['String'];
 }>;
@@ -425,7 +513,11 @@ export type GetItemDetailsQuery = (
       )> }
     ), description: (
       { __typename?: 'DescriptionObject' }
-      & Pick<DescriptionObject, 'details' | 'size' | 'fit' | 'materials' | 'care'>
+      & Pick<DescriptionObject, 'details' | 'size' | 'fit' | 'materials' | 'care' | 'extra'>
+      & { specifications?: Maybe<Array<(
+        { __typename?: 'SpecificationsObject' }
+        & Pick<SpecificationsObject, 'key' | 'value'>
+      )>> }
     ) }
   ) }
 );
@@ -625,6 +717,38 @@ export function useAddRemoveItemToWishlistMutation(baseOptions?: Apollo.Mutation
 export type AddRemoveItemToWishlistMutationHookResult = ReturnType<typeof useAddRemoveItemToWishlistMutation>;
 export type AddRemoveItemToWishlistMutationResult = Apollo.MutationResult<AddRemoveItemToWishlistMutation>;
 export type AddRemoveItemToWishlistMutationOptions = Apollo.BaseMutationOptions<AddRemoveItemToWishlistMutation, AddRemoveItemToWishlistMutationVariables>;
+export const AddToCartDocument = gql`
+    mutation AddToCart($itemId: String!, $quantity: Float!, $size: String!) {
+  addToCart(itemId: $itemId, quantity: $quantity, size: $size)
+}
+    `;
+export type AddToCartMutationFn = Apollo.MutationFunction<AddToCartMutation, AddToCartMutationVariables>;
+
+/**
+ * __useAddToCartMutation__
+ *
+ * To run a mutation, you first call `useAddToCartMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddToCartMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addToCartMutation, { data, loading, error }] = useAddToCartMutation({
+ *   variables: {
+ *      itemId: // value for 'itemId'
+ *      quantity: // value for 'quantity'
+ *      size: // value for 'size'
+ *   },
+ * });
+ */
+export function useAddToCartMutation(baseOptions?: Apollo.MutationHookOptions<AddToCartMutation, AddToCartMutationVariables>) {
+        return Apollo.useMutation<AddToCartMutation, AddToCartMutationVariables>(AddToCartDocument, baseOptions);
+      }
+export type AddToCartMutationHookResult = ReturnType<typeof useAddToCartMutation>;
+export type AddToCartMutationResult = Apollo.MutationResult<AddToCartMutation>;
+export type AddToCartMutationOptions = Apollo.BaseMutationOptions<AddToCartMutation, AddToCartMutationVariables>;
 export const GetAllItemIdsBySubCategoryDocument = gql`
     query GetAllItemIdsBySubCategory($subCategory: String!) {
   getAllItemIdsBySubCategory(subCategory: $subCategory) {
@@ -722,6 +846,82 @@ export function useGetAllCategoryAndSubCategoryNameLazyQuery(baseOptions?: Apoll
 export type GetAllCategoryAndSubCategoryNameQueryHookResult = ReturnType<typeof useGetAllCategoryAndSubCategoryNameQuery>;
 export type GetAllCategoryAndSubCategoryNameLazyQueryHookResult = ReturnType<typeof useGetAllCategoryAndSubCategoryNameLazyQuery>;
 export type GetAllCategoryAndSubCategoryNameQueryResult = Apollo.QueryResult<GetAllCategoryAndSubCategoryNameQuery, GetAllCategoryAndSubCategoryNameQueryVariables>;
+export const GetAllItemIdsBySubCategoryWithFilterDocument = gql`
+    query GetAllItemIdsBySubCategoryWithFilter($subCategory: String!, $filterOptions: FilterOptions!) {
+  getAllItemIdsBySubCategoryWithFilter(
+    subCategory: $subCategory
+    filterOptions: $filterOptions
+  ) {
+    itemIds
+    count
+  }
+}
+    `;
+
+/**
+ * __useGetAllItemIdsBySubCategoryWithFilterQuery__
+ *
+ * To run a query within a React component, call `useGetAllItemIdsBySubCategoryWithFilterQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllItemIdsBySubCategoryWithFilterQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllItemIdsBySubCategoryWithFilterQuery({
+ *   variables: {
+ *      subCategory: // value for 'subCategory'
+ *      filterOptions: // value for 'filterOptions'
+ *   },
+ * });
+ */
+export function useGetAllItemIdsBySubCategoryWithFilterQuery(baseOptions: Apollo.QueryHookOptions<GetAllItemIdsBySubCategoryWithFilterQuery, GetAllItemIdsBySubCategoryWithFilterQueryVariables>) {
+        return Apollo.useQuery<GetAllItemIdsBySubCategoryWithFilterQuery, GetAllItemIdsBySubCategoryWithFilterQueryVariables>(GetAllItemIdsBySubCategoryWithFilterDocument, baseOptions);
+      }
+export function useGetAllItemIdsBySubCategoryWithFilterLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllItemIdsBySubCategoryWithFilterQuery, GetAllItemIdsBySubCategoryWithFilterQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllItemIdsBySubCategoryWithFilterQuery, GetAllItemIdsBySubCategoryWithFilterQueryVariables>(GetAllItemIdsBySubCategoryWithFilterDocument, baseOptions);
+        }
+export type GetAllItemIdsBySubCategoryWithFilterQueryHookResult = ReturnType<typeof useGetAllItemIdsBySubCategoryWithFilterQuery>;
+export type GetAllItemIdsBySubCategoryWithFilterLazyQueryHookResult = ReturnType<typeof useGetAllItemIdsBySubCategoryWithFilterLazyQuery>;
+export type GetAllItemIdsBySubCategoryWithFilterQueryResult = Apollo.QueryResult<GetAllItemIdsBySubCategoryWithFilterQuery, GetAllItemIdsBySubCategoryWithFilterQueryVariables>;
+export const GetCartDetailsDocument = gql`
+    query GetCartDetails {
+  getCartDetails {
+    cartId
+    items {
+      itemId
+      size
+      quantity
+    }
+    count
+  }
+}
+    `;
+
+/**
+ * __useGetCartDetailsQuery__
+ *
+ * To run a query within a React component, call `useGetCartDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCartDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCartDetailsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCartDetailsQuery(baseOptions?: Apollo.QueryHookOptions<GetCartDetailsQuery, GetCartDetailsQueryVariables>) {
+        return Apollo.useQuery<GetCartDetailsQuery, GetCartDetailsQueryVariables>(GetCartDetailsDocument, baseOptions);
+      }
+export function useGetCartDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCartDetailsQuery, GetCartDetailsQueryVariables>) {
+          return Apollo.useLazyQuery<GetCartDetailsQuery, GetCartDetailsQueryVariables>(GetCartDetailsDocument, baseOptions);
+        }
+export type GetCartDetailsQueryHookResult = ReturnType<typeof useGetCartDetailsQuery>;
+export type GetCartDetailsLazyQueryHookResult = ReturnType<typeof useGetCartDetailsLazyQuery>;
+export type GetCartDetailsQueryResult = Apollo.QueryResult<GetCartDetailsQuery, GetCartDetailsQueryVariables>;
 export const GetItemDetailsDocument = gql`
     query GetItemDetails($itemId: String!) {
   getItemDetails(itemId: $itemId) {
@@ -747,6 +947,11 @@ export const GetItemDetailsDocument = gql`
       fit
       materials
       care
+      extra
+      specifications {
+        key
+        value
+      }
     }
   }
 }
