@@ -1,0 +1,22 @@
+query GetItemDetailsForCart(
+  $itemId: String!
+){
+  getItemDetails(
+    itemId:$itemId
+  ){
+    itemId
+    name
+    brand
+    isStared
+    inventory{
+      inventoryId
+      available{
+        name
+        quantity
+      }
+      discount
+      price
+    }
+    images
+  }
+}

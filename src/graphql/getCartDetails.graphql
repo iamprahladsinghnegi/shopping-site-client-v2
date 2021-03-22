@@ -1,10 +1,12 @@
 query GetCartDetails{
 getCartDetails{
-cartId,
+cartId
   items{
-    itemId,
-    size,
+    itemId
+    size
     quantity
+    price
+    discount
   }
   count
 }

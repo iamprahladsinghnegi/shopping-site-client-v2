@@ -1,0 +1,10 @@
+mutation AdjustItemSize(
+$cartId: String!,
+$itemId: String!,
+$size: String! ){
+  adjustItemSize(
+    cartId: $cartId,
+    itemId: $itemId,
+    size: $size,
+  )
+}

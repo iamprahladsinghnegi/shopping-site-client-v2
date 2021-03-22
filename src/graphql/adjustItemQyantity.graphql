@@ -1,0 +1,10 @@
+mutation AdjustItemQyantity(
+$cartId: String!,
+$itemId: String!,
+$quantity: Int ){
+  adjustItemQyantity(
+    cartId: $cartId,
+    itemId: $itemId,
+    quantity: $quantity,
+  )
+}
