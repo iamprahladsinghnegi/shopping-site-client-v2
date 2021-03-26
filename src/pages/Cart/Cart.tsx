@@ -21,7 +21,6 @@ export const Cart: React.FC<CartProps> = ({ }) => {
     }
 
     let priceDetails = cartData.getCartDetails.items.reduce(function (accumulator, currentValue) {
-        console.log('accumulator', accumulator)
         return {
             price: Number(accumulator.price) + (Number(currentValue.price) * Number(currentValue.quantity)),
             priceWithoutDiscount: Number(accumulator.priceWithoutDiscount) + Math.ceil((((Number(currentValue.discount) + 100) * Number(currentValue.price)) * .01) * Number(currentValue.quantity)),
@@ -37,12 +36,12 @@ export const Cart: React.FC<CartProps> = ({ }) => {
     return (
         <div className="cart">
             <Row gutter={24}>
-                <Col span={16} >
+                <Col xs={{ span: 24, offset: 0 }} sm={{ span: 24, offset: 0 }} md={{ span: 24, offset: 0 }} lg={{ span: 16, offset: 0 }} xl={{ span: 16, offset: 0 }} xxl={{ span: 16, offset: 0 }} >
                     {cartData.getCartDetails.items.map((ele, index) => {
                         return <CartItemView cartId={cartData.getCartDetails.cartId} itemId={ele.itemId} size={ele.size} quantity={ele.quantity} />
                     })}
                 </Col>
-                <Col span={8}>
+                <Col xs={{ span: 24, offset: 0 }} sm={{ span: 24, offset: 0 }} md={{ span: 24, offset: 0 }} lg={{ span: 8, offset: 0 }} xl={{ span: 8, offset: 0 }} xxl={{ span: 8, offset: 0 }}>
                     <Card
                         className="cart-info"
                         style={{ marginTop: 16 }}
@@ -51,6 +50,7 @@ export const Cart: React.FC<CartProps> = ({ }) => {
                             <h3>
                                 PRICE DETAILS ({cartData.getCartDetails.count} Items)
                             </h3>
+                            <Divider />
                             <div className="cart-info-content-priceDetails">
                                 <p>
                                     <span className="cart-info-content-priceDetails-left">

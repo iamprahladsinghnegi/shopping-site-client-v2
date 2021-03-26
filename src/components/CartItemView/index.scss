@@ -1,4 +1,5 @@
 .cartItem{
+    margin-top: 12px !important;
     .ant-card-actions{
         button{
             background: transparent;
@@ -9,10 +10,11 @@
     &-content{
         img{
             object-fit: cover;
-            height: 15rem;
-            max-width: 15rem;
+            height: 12rem;
+            max-width: 12rem;
         }
         &-item{
+            margin-left: 16px;
             display: flex;
             justify-content: space-between;
             &-description{
@@ -81,5 +83,150 @@
         position: absolute;
         right: 0;
         top:-5px
+    }
+}
+
+@media (max-width: 767px) {
+    .cartItem{
+        &-content{
+            img{
+                object-fit: cover;
+                height: 12rem;
+                max-width: 12rem;
+            }
+            &-item{
+                margin-left: 12px;
+                &-description{
+                    h3{
+                        // color: red;
+                        font-size: 14px;
+                    }
+                    &-name{
+                        font-size: 13px;
+                    }
+                    &-seller{
+                        font-size: 10px !important;
+                    }
+                    &-action{
+                        &-button{
+                            &-title{
+                                font-size: 12px;
+                            }
+                        }
+                        button{
+                            font-size: 10px;
+                            margin-left: 12px;
+                        }
+                    }
+                }
+                &-price{
+                    &-amount{
+                        font-size: 14px;
+                    }
+                    &-discount{
+                        font-size: 12px;
+                        &-value{
+                            margin-left: 5px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 576px) {
+    .cartItem{
+        &-content{
+            img{
+                height: 7rem;
+                max-width: 7rem;
+            }
+            &-item{
+                &-description{
+                    h3{
+                        // color: red;
+                        font-size: 12px;
+                    }
+                    &-name{
+                        font-size: 11px;
+                    }
+                    &-seller{
+                        font-size: 8px !important;
+                    }
+                    &-action{
+                        &-button{
+                            &-title{
+                                font-size: 10px;
+                            }
+                        }
+                        button{
+                            margin-left: 10px;
+                            font-size: 10px;
+                        }
+    
+                    }
+                }
+                &-price{
+                    &-amount{
+                        font-size: 10px;
+                    }
+                    &-discount{
+                        font-size: 10px;
+                    }
+                }
+            }
+        }
+        &-button{
+            font-size: 10px;
+        }
+        .ant-card-body{
+            padding: 12px;
+        }
+    }
+}
+
+
+@media (min-width: 992px) and (max-width: 1200px) {
+    .cartItem{
+        // background: red !important;
+        &-content{
+            &-item{
+                &-description{
+                    h3{
+                        // color: red;
+                        font-size: 16px;
+                    }
+                    &-name{
+                        font-size: 14px;
+                    }
+                    &-seller{
+                        font-size: 12px !important;
+                    }
+                    &-action{
+                        &-button{
+                            &-title{
+                                font-size: 14px;
+                            }
+                        }
+                        button{
+                            font-size: 12px;
+                            margin-left: 14px;
+                        }
+                    }
+                }
+                &-price{
+                    &-amount{
+                        font-size: 14px;
+                    }
+                    &-discount{
+                        font-size: 12px;
+                        &-value{
+                            margin-left: 5px;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

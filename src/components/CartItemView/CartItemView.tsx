@@ -208,15 +208,18 @@ export const CartItemView: React.FC<CartItemViewProps> = ({ itemId, quantity, si
             className="cartItem"
             style={{ width: '100%', marginTop: 16 }}
             actions={[
-                <button onClick={onClickRemove} >Remove</button>
+                <button className="cartItem-button" onClick={onClickRemove} >Remove</button>
             ]}
         >
             <div className="cartItem-content">
-                <Row gutter={24}>
-                    <Col span={6}>
+                {/* gutter={24} */}
+                <Row wrap={false}>
+                    {/* xs={{ span: 8, offset: 0 }} sm={{ span: 8, offset: 0 }} md={{ span: 8, offset: 0 }} lg={{ span: 8, offset: 0 }} xl={{ span: 8, offset: 0 }} xxl={{ span: 6, offset: 0 }} */}
+                    <Col flex='none' >
                         <img alt='sometext' src={data.getItemDetails.images[0]} />
                     </Col>
-                    <Col span={18}>
+                    {/* xs={{ span: 16, offset: 0 }} sm={{ span: 16, offset: 0 }} md={{ span: 16, offset: 0 }} lg={{ span: 14, offset: 0 }} xl={{ span: 16, offset: 0 }} xxl={{ span: 18, offset: 0 }} */}
+                    <Col flex='auto'>
                         <div className="cartItem-content-item">
                             <div className="cartItem-content-item-description">
                                 <h3>
@@ -230,27 +233,27 @@ export const CartItemView: React.FC<CartItemViewProps> = ({ itemId, quantity, si
                                 </p>
                                 <div className="cartItem-content-item-description-action">
                                     <p>
-                                        <span>
-                                            Size :
-                                        </span>
-                                        <button onClick={e => { showModal(e, 'size') }}>
-                                            {selectedSize}
-                                        </button>
-                                    </p>
-                                    <p>
-                                        <span>
+                                        <span className="cartItem-content-item-description-action-button-title">
                                             Quantity :
                                         </span>
                                         <button onClick={e => { showModal(e, 'quantity') }}>
                                             {selectedQuantity}
                                         </button>
                                     </p>
+                                    <p className="cartItem-content-item-description-action-button">
+                                        <span className="cartItem-content-item-description-action-button-title">
+                                            Size :
+                                        </span>
+                                        <button onClick={e => { showModal(e, 'size') }}>
+                                            {selectedSize}
+                                        </button>
+                                    </p>
                                 </div>
                             </div>
                             <div className="cartItem-content-item-price">
-                                <p className="cartItem-content-item-price-amount">
+                                <h3 className="cartItem-content-item-price-amount">
                                     &#8377; {data.getItemDetails.inventory.price}
-                                </p>
+                                </h3>
                                 <p className="cartItem-content-item-price-discount">
                                     <span className="cartItem-content-item-price-discount-line">
                                         <span>&#8377; {priceWithoutDiscount}</span>

@@ -26,6 +26,8 @@ export type Query = {
   getAllSubCategoriesWithCategory: Array<SubCategoryWithCategoryResponse>;
   getAllItemIdsBySubCategory: ItemIdsResponse;
   getAllItemIdsBySubCategoryWithFilter: ItemIdsResponse;
+  allSubCategoriesWithItem: Array<SubCatWithItemIdsResponse>;
+  getAllItemsByIds: Array<ItemArrayElement>;
   getInventoryLevelByInventoryId: Array<AvailableObject>;
   getCartDetailsByCartId: CartResponse;
   getCartDetails: CartResponse;
@@ -51,6 +53,11 @@ export type QueryGetAllItemIdsBySubCategoryArgs = {
 export type QueryGetAllItemIdsBySubCategoryWithFilterArgs = {
   subCategory: Scalars['String'];
   filterOptions: FilterOptions;
+};
+
+
+export type QueryGetAllItemsByIdsArgs = {
+  itemIds: Array<Scalars['String']>;
 };
 
 
@@ -179,6 +186,21 @@ export enum SortFilter {
   Costly = 'COSTLY',
   Budget = 'BUDGET'
 }
+
+export type SubCatWithItemIdsResponse = {
+  __typename?: 'SubCatWithItemIdsResponse';
+  subCategory: Scalars['String'];
+  itemIds: Array<Scalars['String']>;
+};
+
+export type ItemArrayElement = {
+  __typename?: 'ItemArrayElement';
+  itemId: Scalars['String'];
+  url: Scalars['String'];
+  name: Scalars['String'];
+  brand: Scalars['String'];
+  price: Scalars['Int'];
+};
 
 export type Offers = {
   __typename?: 'offers';
@@ -481,6 +503,17 @@ export type GetAllItemIdsBySubCategoryQuery = (
   ) }
 );
 
+export type AllSubCategoriesWithItemQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllSubCategoriesWithItemQuery = (
+  { __typename?: 'Query' }
+  & { allSubCategoriesWithItem: Array<(
+    { __typename?: 'SubCatWithItemIdsResponse' }
+    & Pick<SubCatWithItemIdsResponse, 'subCategory' | 'itemIds'>
+  )> }
+);
+
 export type ByeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -497,6 +530,19 @@ export type GetAllCategoryAndSubCategoryNameQuery = (
   & { getAllCategoryAndSubCategoryName: Array<(
     { __typename?: 'CategoryAndSubCategory' }
     & Pick<CategoryAndSubCategory, 'category' | 'subCategory'>
+  )> }
+);
+
+export type GetAllItemsByIdsQueryVariables = Exact<{
+  itemIds: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type GetAllItemsByIdsQuery = (
+  { __typename?: 'Query' }
+  & { getAllItemsByIds: Array<(
+    { __typename?: 'ItemArrayElement' }
+    & Pick<ItemArrayElement, 'itemId' | 'url' | 'name' | 'brand' | 'price'>
   )> }
 );
 
@@ -914,6 +960,39 @@ export function useGetAllItemIdsBySubCategoryLazyQuery(baseOptions?: Apollo.Lazy
 export type GetAllItemIdsBySubCategoryQueryHookResult = ReturnType<typeof useGetAllItemIdsBySubCategoryQuery>;
 export type GetAllItemIdsBySubCategoryLazyQueryHookResult = ReturnType<typeof useGetAllItemIdsBySubCategoryLazyQuery>;
 export type GetAllItemIdsBySubCategoryQueryResult = Apollo.QueryResult<GetAllItemIdsBySubCategoryQuery, GetAllItemIdsBySubCategoryQueryVariables>;
+export const AllSubCategoriesWithItemDocument = gql`
+    query AllSubCategoriesWithItem {
+  allSubCategoriesWithItem {
+    subCategory
+    itemIds
+  }
+}
+    `;
+
+/**
+ * __useAllSubCategoriesWithItemQuery__
+ *
+ * To run a query within a React component, call `useAllSubCategoriesWithItemQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllSubCategoriesWithItemQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllSubCategoriesWithItemQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllSubCategoriesWithItemQuery(baseOptions?: Apollo.QueryHookOptions<AllSubCategoriesWithItemQuery, AllSubCategoriesWithItemQueryVariables>) {
+        return Apollo.useQuery<AllSubCategoriesWithItemQuery, AllSubCategoriesWithItemQueryVariables>(AllSubCategoriesWithItemDocument, baseOptions);
+      }
+export function useAllSubCategoriesWithItemLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllSubCategoriesWithItemQuery, AllSubCategoriesWithItemQueryVariables>) {
+          return Apollo.useLazyQuery<AllSubCategoriesWithItemQuery, AllSubCategoriesWithItemQueryVariables>(AllSubCategoriesWithItemDocument, baseOptions);
+        }
+export type AllSubCategoriesWithItemQueryHookResult = ReturnType<typeof useAllSubCategoriesWithItemQuery>;
+export type AllSubCategoriesWithItemLazyQueryHookResult = ReturnType<typeof useAllSubCategoriesWithItemLazyQuery>;
+export type AllSubCategoriesWithItemQueryResult = Apollo.QueryResult<AllSubCategoriesWithItemQuery, AllSubCategoriesWithItemQueryVariables>;
 export const ByeDocument = gql`
     query Bye {
   bye
@@ -977,6 +1056,43 @@ export function useGetAllCategoryAndSubCategoryNameLazyQuery(baseOptions?: Apoll
 export type GetAllCategoryAndSubCategoryNameQueryHookResult = ReturnType<typeof useGetAllCategoryAndSubCategoryNameQuery>;
 export type GetAllCategoryAndSubCategoryNameLazyQueryHookResult = ReturnType<typeof useGetAllCategoryAndSubCategoryNameLazyQuery>;
 export type GetAllCategoryAndSubCategoryNameQueryResult = Apollo.QueryResult<GetAllCategoryAndSubCategoryNameQuery, GetAllCategoryAndSubCategoryNameQueryVariables>;
+export const GetAllItemsByIdsDocument = gql`
+    query GetAllItemsByIds($itemIds: [String!]!) {
+  getAllItemsByIds(itemIds: $itemIds) {
+    itemId
+    url
+    name
+    brand
+    price
+  }
+}
+    `;
+
+/**
+ * __useGetAllItemsByIdsQuery__
+ *
+ * To run a query within a React component, call `useGetAllItemsByIdsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllItemsByIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllItemsByIdsQuery({
+ *   variables: {
+ *      itemIds: // value for 'itemIds'
+ *   },
+ * });
+ */
+export function useGetAllItemsByIdsQuery(baseOptions: Apollo.QueryHookOptions<GetAllItemsByIdsQuery, GetAllItemsByIdsQueryVariables>) {
+        return Apollo.useQuery<GetAllItemsByIdsQuery, GetAllItemsByIdsQueryVariables>(GetAllItemsByIdsDocument, baseOptions);
+      }
+export function useGetAllItemsByIdsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllItemsByIdsQuery, GetAllItemsByIdsQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllItemsByIdsQuery, GetAllItemsByIdsQueryVariables>(GetAllItemsByIdsDocument, baseOptions);
+        }
+export type GetAllItemsByIdsQueryHookResult = ReturnType<typeof useGetAllItemsByIdsQuery>;
+export type GetAllItemsByIdsLazyQueryHookResult = ReturnType<typeof useGetAllItemsByIdsLazyQuery>;
+export type GetAllItemsByIdsQueryResult = Apollo.QueryResult<GetAllItemsByIdsQuery, GetAllItemsByIdsQueryVariables>;
 export const GetAllItemIdsBySubCategoryWithFilterDocument = gql`
     query GetAllItemIdsBySubCategoryWithFilter($subCategory: String!, $filterOptions: FilterOptions!) {
   getAllItemIdsBySubCategoryWithFilter(

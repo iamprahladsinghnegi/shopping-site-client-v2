@@ -1,46 +1,56 @@
 import React from 'react';
-import { List } from 'antd'
-import { CustomCard, CommonCardProps } from '../CustomCard/CustomCard';
+import { List, Skeleton } from 'antd'
+import { CustomCard } from '../CustomCard/CustomCard';
 import './index.scss';
 import { useHistory } from 'react-router-dom';
-
+import { useGetAllItemsByIdsQuery } from '../../generated/graphql';
 
 interface ListViewProps {
     category: string;
-    dataSource: Array<CommonCardProps>;
-    onClickList: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, params: string) => void;
-
+    itemIds: Array<string>;
 }
 
-
-export const ListView: React.FC<ListViewProps> = ({ category, dataSource, onClickList }) => {
+export const ListView: React.FC<ListViewProps> = ({ category, itemIds }) => {
     const history = useHistory();
+    const { data, loading, error } = useGetAllItemsByIdsQuery({ variables: { itemIds } });
+
+    if (error) {
+        return <Skeleton />
+    }
+    if (loading || !data || !data.getAllItemsByIds) {
+        return <Skeleton />
+    }
+
+    const onClickList = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        history.push({ pathname: `./${category}` })
+    }
     const header: JSX.Element = <div className="listview-header">
         <h3>{category}</h3>
-        <button onClick={e => { onClickList(e, category) }} >{`View All >`}</button>
+        <button onClick={e => { onClickList(e) }} >{`View All >`}</button>
     </div>
-    const handleOnClik = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string, name?: string): void => {
+    const handleOnClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string, name?: string): void => {
         history.push({ pathname: `./${category}/${id}$${name}` })
     }
+
     return (
         <List className="listview"
             grid={{ gutter: 24, sm: 2, xs: 2, md: 4, lg: 4, xl: 6, xxl: 6 }}
-            dataSource={dataSource}
+            dataSource={data.getAllItemsByIds}
             header={header}
-            renderItem={(element: CommonCardProps) => (
+            renderItem={(element) => (
                 <List.Item
-                    key={element.title}
+                    key={element.name}
                 >
                     <CustomCard
                         hoverable={false}
                         type={'item-preview'}
-                        param={element.param}
-                        handleClick={handleOnClik}
+                        param={element.itemId}
+                        handleClick={handleOnClick}
                         styleName="preview-card"
-                        imageUrl={element.imageUrl}
-                        title={element.title}
+                        imageUrl={element.url}
+                        title={element.brand}
                         price={element.price}
-                        description={element.description} />
+                        description={element.name} />
                 </List.Item>
             )}
         />

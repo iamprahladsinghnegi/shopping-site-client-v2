@@ -1,0 +1,9 @@
+query GetAllItemsByIds($itemIds: [String!]! ){
+  getAllItemsByIds(itemIds: $itemIds){
+  itemId
+    url
+    name
+    brand
+    price
+  }
+}
