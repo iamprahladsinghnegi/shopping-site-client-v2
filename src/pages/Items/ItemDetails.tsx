@@ -61,6 +61,9 @@ export const ItemDetails: React.FC<ItemDetailsProps & RouteComponentProps> = ({ 
                         message.info('Item successfully added to bag!');
                         setButtonText('GO TO BAG');
                     }
+                }).catch(err => {
+                    console.log('Error', err);
+                    message.error('Unable to add item to bag!');
                 })
             }
 

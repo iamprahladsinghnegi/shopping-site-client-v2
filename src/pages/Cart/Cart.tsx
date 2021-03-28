@@ -1,4 +1,4 @@
-import { Button, Card, Col, Divider, Row, Skeleton } from 'antd';
+import { Button, Card, Col, Divider, Row, Skeleton, Empty } from 'antd';
 import React from 'react';
 import { CartItemView } from 'src/components/CartItemView/CartItemView';
 import { useGetCartDetailsQuery } from 'src/generated/graphql';
@@ -37,9 +37,16 @@ export const Cart: React.FC<CartProps> = ({ }) => {
         <div className="cart">
             <Row gutter={24}>
                 <Col xs={{ span: 24, offset: 0 }} sm={{ span: 24, offset: 0 }} md={{ span: 24, offset: 0 }} lg={{ span: 16, offset: 0 }} xl={{ span: 16, offset: 0 }} xxl={{ span: 16, offset: 0 }} >
-                    {cartData.getCartDetails.items.map((ele, index) => {
-                        return <CartItemView cartId={cartData.getCartDetails.cartId} itemId={ele.itemId} size={ele.size} quantity={ele.quantity} />
-                    })}
+                    {
+                        cartData.getCartDetails.count === 0 ?
+                            <Card bordered className="cart-empty">
+                                <Empty description={<p>No item found in cart, Please add items to cart.</p>} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                            </Card>
+                            :
+                            cartData.getCartDetails.items.map((ele, index) => {
+                                return <CartItemView cartId={cartData.getCartDetails.cartId} itemId={ele.itemId} size={ele.size} quantity={ele.quantity} />
+                            })
+                    }
                 </Col>
                 <Col xs={{ span: 24, offset: 0 }} sm={{ span: 24, offset: 0 }} md={{ span: 24, offset: 0 }} lg={{ span: 8, offset: 0 }} xl={{ span: 8, offset: 0 }} xxl={{ span: 8, offset: 0 }}>
                     <Card

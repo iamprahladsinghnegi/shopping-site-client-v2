@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Skeleton } from 'antd'
+import { Col, Row, List, Skeleton, Card } from 'antd'
 import { CustomCard } from '../CustomCard/CustomCard';
 import './index.scss';
 import { useHistory } from 'react-router-dom';
@@ -32,28 +32,49 @@ export const ListView: React.FC<ListViewProps> = ({ category, itemIds }) => {
         history.push({ pathname: `./${category}/${id}$${name}` })
     }
 
+    // return (
+    //     <List className="listview"
+    //         grid={{ gutter: 24, sm: 2, xs: 2, md: 4, lg: 4, xl: 6, xxl: 6 }}
+    //         dataSource={data.getAllItemsByIds}
+    //         header={header}
+    //         renderItem={(element) => (
+    //             <List.Item
+    //                 key={element.name}
+    //             >
+    //                 <CustomCard
+    //                     hoverable={false}
+    //                     type={'item-preview'}
+    //                     param={element.itemId}
+    //                     handleClick={handleOnClick}
+    //                     styleName="preview-card"
+    //                     imageUrl={element.url}
+    //                     title={element.brand}
+    //                     price={element.price}
+    //                     description={element.name} />
+    //             </List.Item>
+    //         )}
+    //     />
+    // )
     return (
-        <List className="listview"
-            grid={{ gutter: 24, sm: 2, xs: 2, md: 4, lg: 4, xl: 6, xxl: 6 }}
-            dataSource={data.getAllItemsByIds}
-            header={header}
-            renderItem={(element) => (
-                <List.Item
-                    key={element.name}
-                >
-                    <CustomCard
-                        hoverable={false}
-                        type={'item-preview'}
-                        param={element.itemId}
-                        handleClick={handleOnClick}
-                        styleName="preview-card"
-                        imageUrl={element.url}
-                        title={element.brand}
-                        price={element.price}
-                        description={element.name} />
-                </List.Item>
-            )}
-        />
+        <Card className="listview" bodyStyle={{ padding: 0 }} title={category} extra={<button onClick={e => { onClickList(e) }} >{`View All >`}</button>}>
+            <Row gutter={24}>
+                {data.getAllItemsByIds.map(element => {
+                    return <Col xs={12} sm={12} md={8} lg={8} xl={6} xxl={4} >
+                        <CustomCard
+                            hoverable={false}
+                            type={'item-preview'}
+                            param={element.itemId}
+                            handleClick={handleOnClick}
+                            styleName="preview-card"
+                            imageUrl={element.url}
+                            title={element.brand}
+                            price={element.price}
+                            description={element.name} />
+                    </Col>
+                })
+                }
+            </Row>
+        </Card>
     )
 }
 

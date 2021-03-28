@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Avatar, Dropdown, Drawer, message, Menu, Row, Col, Input, Button } from 'antd';
 import './index.scss';
 import "antd/dist/antd.css";
-import { UserOutlined, NotificationOutlined, StarOutlined, SearchOutlined, MenuOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { UserOutlined, NotificationOutlined, ShoppingCartOutlined, SearchOutlined, MenuOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { setAccessToken } from 'src/accessToken';
 import { useGetAllCategoryAndSubCategoryNameQuery, useLogoutUserMutation, useUserDetailsQuery } from 'src/generated/graphql';
 import { Link, useHistory, useLocation } from 'react-router-dom';
@@ -168,7 +168,7 @@ export const Header: React.FC<HeaderProps> = () => {
                             </Dropdown>
                         </Col>
                         <Col xs={{ span: 6, offset: 0 }} sm={{ span: 6, offset: 3 }} md={{ span: 6, offset: 2 }} lg={{ span: 4, offset: 2 }} xl={{ span: 4, offset: 3 }} xxl={{ span: 4, offset: 2 }} >
-                            <Avatar shape="square" className="header-icon" icon={<StarOutlined onClick={onClickCart} />} />
+                            <Avatar shape="square" className="header-icon" icon={<ShoppingCartOutlined onClick={onClickCart} />} />
                         </Col>
                         <Col xs={{ span: 6, offset: 0 }} sm={{ span: 6, offset: 3 }} md={{ span: 6, offset: 2 }} lg={{ span: 4, offset: 2 }} xl={{ span: 4, offset: 4 }} xxl={{ span: 4, offset: 2 }} >
                             <Avatar shape="square" className="header-icon" icon={<NotificationOutlined onClick={onClickNotification} />} />

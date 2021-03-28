@@ -39,7 +39,7 @@ export const CustomCard: React.FC<CustomCardProps> = ({ param, imageUrl, title, 
         >
             <div className={`${styleName}-body`}>
                 <div>
-                    <Card.Meta description={description} title={title} />
+                    <Card.Meta description={<p className={`${styleName}-description-p`}>{description}</p>} title={title} />
                     {
                         type === "item-preview" &&
                         <Card.Meta className={`${styleName}-body-extra`} title={`Rs. ${price}`} />

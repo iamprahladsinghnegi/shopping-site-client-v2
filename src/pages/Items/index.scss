@@ -363,14 +363,18 @@
                 &-header{
                     display: none;
                 }
-                // &-items{
-                //        &-card{
-                //            margin: 0 ;
-                //        }
-                //    }
+                &-items{
+                    margin-bottom: 50px;
+                    //    &-card{
+                    //        margin: 0 ;
+                    //    }
+                   }
             }
             &-footer{
                 display: block;
+                position: absolute;
+                bottom: 0;
+                width: 100%;
                 &-content{
                     width: 50%;
                     height: 3rem;

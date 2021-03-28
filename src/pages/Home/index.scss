@@ -64,6 +64,9 @@
         }
       }
       &-categories{
+        h1{
+          font-size: 16px;
+        }
         &-container{
           overflow-x: auto;
           .ant-row{
