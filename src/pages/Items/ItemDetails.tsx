@@ -55,7 +55,7 @@ export const ItemDetails: React.FC<ItemDetailsProps & RouteComponentProps> = ({ 
             } else {
                 addToCart().then(response => {
                     if (response.errors || response.data?.addToCart === false) {
-                        message.error('Unable to add item to bag!');
+                        message.info('Unable to add item to bag!');
                     }
                     else {
                         message.info('Item successfully added to bag!');
@@ -63,7 +63,7 @@ export const ItemDetails: React.FC<ItemDetailsProps & RouteComponentProps> = ({ 
                     }
                 }).catch(err => {
                     console.log('Error', err);
-                    message.error('Unable to add item to bag!');
+                    message.info('Unable to add item to bag!');
                 })
             }
 

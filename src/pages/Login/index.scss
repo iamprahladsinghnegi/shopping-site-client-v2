@@ -15,3 +15,12 @@
     }
     
 }
+
+@media (max-width: 767px) {
+    .login{
+        &-card{
+            width: 85%;
+        }
+    }
+}
+  

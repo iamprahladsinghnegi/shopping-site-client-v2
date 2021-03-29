@@ -19,7 +19,7 @@
             overflow: hidden;
             object-fit: cover;
             height: 15rem;
-            max-width: 15rem;
+            width: 15rem;
             margin: 1em auto 0 auto;
             border-radius: 50% !important;
         }
@@ -66,7 +66,7 @@
 
 
 
-@media (max-width: 767px)  {
+@media (max-width: 576px)  {
   .preview-card{
       margin:0;
   }
@@ -81,6 +81,45 @@
       margin: 0;
       &-image{
         height: 10rem;
+        width: 10rem;
+      }
+    }
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .cart-category{
+    &-round{
+      .ant-card-meta-title{
+        font-size: 12px;
+      }
+      margin: 0;
+      &-image{
+        height: 15rem;
+        width: 15rem;
+      }
+    }
+  }
+}
+
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .cart-category{
+    &-round{
+      &-image{
+        height: 13rem;
+        width: 13rem;
+      }
+    }
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .cart-category{
+    &-round{
+      &-image{
+        height: 13rem;
+        width: 13rem;
       }
     }
   }

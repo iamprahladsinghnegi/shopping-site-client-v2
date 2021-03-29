@@ -18,3 +18,11 @@
     }
     
 }
+
+@media (max-width: 767px) {
+    .register{
+        &-card{
+            width: 85%;
+        }
+    }
+}

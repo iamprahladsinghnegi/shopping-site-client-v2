@@ -78,7 +78,7 @@ export const Home: React.FC<HomeProps & RouteComponentProps> = ({ history }) => 
                             <>
                                 {(categoryData && categoryData.getAllSubCategoriesWithCategory) ?
                                     categoryData.getAllSubCategoriesWithCategory.map(item => {
-                                        return <Col key={item.subCategory} xs={12} sm={12} md={8} lg={6} xl={4} >
+                                        return <Col key={item.subCategory} xs={12} sm={12} md={8} lg={6} xl={6} xxl={4} >
                                             <CustomCard
                                                 param={item.subCategory}
                                                 handleClick={handleClick}

@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = () => {
         setVisible(true);
     };
 
-    const onClose = (e?: React.KeyboardEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement | HTMLButtonElement>): void => {
+    const onClose = (e?: React.KeyboardEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement | HTMLButtonElement> | React.MouseEvent<HTMLAnchorElement, MouseEvent>): void => {
         setVisible(false);
     };
 
@@ -52,6 +52,9 @@ export const Header: React.FC<HeaderProps> = () => {
         return logoutUser().then(res => {
             setAccessToken('');
             client.resetStore();
+            if (isVisible) {
+                onClose();
+            }
             history.push('./');
         })
     }
@@ -84,26 +87,47 @@ export const Header: React.FC<HeaderProps> = () => {
     const onClickNotification = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>): void => {
         console.log('onClickNotification')
     }
+    const onClickAvatr = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>): void => {
+        onClose();
+        history.push('/');
+    }
 
-    const drawerTitile = <>
-        <div className="header-drawer-title">
-            Profile
-        </div>
-    </>;
+    let drawerTitile: JSX.Element | null = null;
 
-    let userMenuOption: any = null;
+    let userMenuOption: JSX.Element | null = null;
 
     if (!userData || !userData.getUserDetails) {
         userMenuOption = <>
             <Menu.Item key="login" ><Link to="/login">Log in</Link></Menu.Item>
-            <Menu.Item key="signin"><Link to="/register">register</Link></Menu.Item>
+            <Menu.Item key="signin"><Link to="/register">Register</Link></Menu.Item>
         </>;
+        drawerTitile = <div className="header-drawer-top">
+            <Avatar size={50} icon={<UserOutlined onClick={onClickAvatr} />} />
+            <p className="header-drawer-top-text" >
+                <Link onClick={onClose} to="/login">Log in</Link>
+            </p>
+            <p className="header-drawer-top-text">
+                <Link onClick={onClose} to="/register">Register</Link>
+            </p>
+        </div>;
     } else {
         userMenuOption = <>
+            <Menu.Item key="login" >{userData.getUserDetails.firstName}</Menu.Item>
             <Menu.Item key="login" >{userData.getUserDetails.email}</Menu.Item>
-            <Menu.Item key="Casuals">Profile</Menu.Item>
-            <Menu.Item key="logout"><Button style={{ width: "100%" }} onClick={e => logOutUser(e)}>log out</Button></Menu.Item>
+            <Menu.Item key="logout"><Button onClick={logOutUser} danger type="primary" block>Log out</Button></Menu.Item>
         </>;
+        drawerTitile = <div className="header-drawer-top">
+            <Avatar size="large"><Link onClick={onClose} to="/">{userData.getUserDetails.firstName[0]}</Link></Avatar>
+            <p className="header-drawer-top-text" >
+                {userData.getUserDetails.firstName}
+            </p>
+            <p className="header-drawer-top-email" >
+                {userData.getUserDetails.email}
+            </p>
+            <Button onClick={logOutUser} danger type="primary" block>
+                Log out
+            </Button>
+        </div>;
     }
 
     let menuOption: JSX.Element[] | null = null;
@@ -111,15 +135,6 @@ export const Header: React.FC<HeaderProps> = () => {
     if (!categoryData || !categoryData.getAllCategoryAndSubCategoryName) {
         //use default menu
     } else {
-        // let categories: JSX.Element[] = [];
-        // categoryData.getAllCategoryAndSubCategoryName.forEach((element, index) => {
-        //     let subCategories: JSX.Element[] = []
-        //     element.subCategory.forEach(ele => {
-        //         subCategories.push(<Menu.Item key={ele}>{ele}</Menu.Item>)
-        //     })
-        //     categories.push(<Menu.SubMenu key={index} title={element.category}>{subCategories}</Menu.SubMenu>)
-        // })
-        // menuOption = categories
         menuOption = categoryData.getAllCategoryAndSubCategoryName.map((element, index) => {
             return <Menu.SubMenu key={index} title={element.category}>{element.subCategory.map(ele => {
                 return <Menu.Item key={ele}>{ele}</Menu.Item>
@@ -131,7 +146,7 @@ export const Header: React.FC<HeaderProps> = () => {
     const handleBack = (): void => {
         history.goBack();
     }
-    const headerIcon: JSX.Element = pathname === '/' ? <MenuOutlined onClick={showDrawer} /> : <ArrowLeftOutlined onClick={handleBack} />
+    const headerIcon: JSX.Element = (pathname === '/' || pathname === '/login' || pathname === '/register') ? <MenuOutlined onClick={showDrawer} /> : <ArrowLeftOutlined onClick={handleBack} />
     const headerText: string = getHeaderText(pathname);
 
     return (
@@ -143,7 +158,7 @@ export const Header: React.FC<HeaderProps> = () => {
                             {headerIcon}
                         </Col>
                         <Col xs={{ span: 12, offset: 2 }} sm={{ span: 0, offset: 0 }} md={{ span: 0, offset: 0 }} lg={{ span: 0, offset: 0 }} xl={{ span: 0, offset: 0 }} xxl={{ span: 0, offset: 0 }}>
-                            <span>{headerText}</span>
+                            <span className="header-text">{headerText}</span>
                         </Col>
                         <Col xs={{ span: 0, offset: 2 }} sm={{ span: 4, offset: 0 }} md={{ span: 4, offset: 0 }} lg={{ span: 4, offset: 0 }} xl={{ span: 4, offset: 0 }} xxl={{ span: 6, offset: 0 }}>
                             <span>Fashion</span>

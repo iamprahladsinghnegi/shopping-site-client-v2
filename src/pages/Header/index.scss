@@ -34,5 +34,36 @@
 @media (min-width: 576px) and (max-width: 767px) {
   .header {
     background-color: lightblue;
+    &-text{
+        white-space: nowrap;
+    }
   }
 }
+
+@media (max-width: 576px){
+    .header {
+    &-text{
+        white-space: nowrap;
+    }
+      &-drawer{
+          &-top{
+              &-email{
+                text-overflow: ellipsis;
+                overflow: hidden;
+              }
+              a{
+                  color: white;
+              }
+              p{
+                margin-top: 8px;
+                margin-bottom: 8px;
+                font-weight: 300;
+                font-size: 14px;
+                a{
+                    color: black;
+                }
+              }
+          }
+      }
+    }
+  }

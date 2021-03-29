@@ -10,7 +10,7 @@ import './index.scss';
 import { valueType } from 'antd/lib/statistic/utils';
 import { useGetAllItemIdsBySubCategoryWithFilterQuery } from 'src/generated/graphql';
 import { ItemView } from 'src/components/ItemView/ItemView';
-import { SORT_OPTIONS } from '../../constants/AppConstanat'
+import { SORT_OPTIONS, COLOR_OPTIONS, PRICE_OPTIONS, DISCOUNT_OPTIONS } from '../../constants/AppConstanat'
 
 interface ItemsListRouterProps {
     category: string
@@ -62,119 +62,15 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
         }
     }
 
-    const pricePlainOptions = ["Rs. 134 to Rs. 3051", "Rs. 3051 to Rs. 5968", "Rs. 5968 to Rs. 8885", "Rs. 8885 to Rs. 11802"];
-    const priceOptions = pricePlainOptions.map((item, index) => {
+    const priceOptions = PRICE_OPTIONS.map((item, index) => {
         return <><Checkbox value={index} >{item}</Checkbox><br /> </>
     });
 
-    const colorPlainOptions = [
-        "AliceBlue",
-        "AntiqueWhite",
-        "Aqua",
-        "Aquamarine",
-        "Azure",
-        "Beige",
-        "Bisque",
-        "Black",
-        "BlanchedAlmond",
-        "Blue",
-        "BlueViolet",
-        "Brown",
-        "BurlyWood",
-        "CadetBlue",
-        "Chartreuse",
-        "Chocolate",
-        "Coral",
-        "CornflowerBlue",
-        "Cornsilk",
-        "Crimson",
-        "Cyan",
-        "DarkBlue",
-        "DarkCyan",
-        "DarkGoldenRod",
-        "DarkGray",
-        "DarkGrey",
-        "DarkGreen",
-        "DarkKhaki",
-        "DarkMagenta",
-        "DarkOliveGreen",
-        "DarkOrange",
-        "DarkOrchid",
-        "DarkRed",
-        "DarkSlateBlue",
-        "DarkSlateGray",
-        "DarkSlateGrey",
-        "DarkTurquoise",
-        "DarkViolet",
-        "DeepPink",
-        "DeepSkyBlue",
-        "DimGray",
-        "DimGrey",
-        "DodgerBlue",
-        "FireBrick",
-        "FloralWhite",
-        "ForestGreen",
-        "Fuchsia",
-        "Gainsboro",
-        "GhostWhite",
-        "Gold",
-        "GoldenRod",
-        "Gray",
-        "Grey",
-        "Green",
-        "GreenYellow",
-        "HoneyDew",
-        "HotPink",
-        "IndianRed",
-        "Indigo",
-        "Ivory",
-        "MediumSeaGreen",
-        "MediumSlateBlue",
-        "MediumTurquoise",
-        "MediumVioletRed",
-        "MidnightBlue",
-        "MintCream",
-        "MistyRose",
-        "Moccasin",
-        "NavajoWhite",
-        "Navy",
-        "OldLace",
-        "Olive",
-        "OliveDrab",
-        "Orange",
-        "OrangeRed",
-        "Orchid",
-        "PaleGoldenRod",
-        "PaleGreen",
-        "PaleTurquoise",
-        "PaleVioletRed",
-        "PapayaWhip",
-        "SeaShell",
-        "Sienna",
-        "Silver",
-        "SkyBlue",
-        "SlateBlue",
-        "SlateGray",
-        "SlateGrey",
-        "Snow",
-        "WhiteSmoke",
-        "Yellow",
-        "YellowGreen",
-    ];
-    const colorOptions = colorPlainOptions.map((item, index) => {
+    const colorOptions = COLOR_OPTIONS.map((item, index) => {
         return <><Checkbox value={item}><span className="label-color" style={{ backgroundColor: item }}></span>{item}</Checkbox><br /> </>
     });
-    const discountPlanOption = [
-        "10 % and above",
-        "20 % and above",
-        "30 % and above",
-        "40 % and above",
-        "50 % and above",
-        "60 % and above",
-        "70 % and above",
-        "80 % and above"
-    ]
-    const discountOptions = discountPlanOption.map((item, index) => {
+
+    const discountOptions = DISCOUNT_OPTIONS.map((item, index) => {
         return <><Checkbox value={index}>{item}</Checkbox><br /> </>
     });
 
@@ -189,7 +85,7 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
     const filterHeader: JSX.Element = <div style={{ display: 'flex', flexDirection: "row", justifyContent: 'space-between' }}>
         <text>
             FILTERS
-            </text>
+        </text>
         {isClearOption && <button style={{ border: 0, background: "transparent", outline: 'none' }} onClick={resetFilters}>Clear All</button>}
     </div>
 
@@ -208,7 +104,7 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
         <div className="item-listing-layout-sider-content-price" >
             <text>
                 PRICE
-                            </text>
+            </text>
             <div className="item-listing-layout-sider-content-price-options">
                 <Checkbox.Group value={filterPrice} onChange={e => { onChange(e, 'price') }} >
                     {priceOptions}
@@ -219,7 +115,7 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
         <div className="item-listing-layout-sider-content-color" >
             <text>
                 COLOR
-                            </text>
+            </text>
             <div className="item-listing-layout-sider-content-color-options">
                 <Checkbox.Group value={filterColor} onChange={e => { onChange(e, 'color') }} >
                     {colorOptions}
@@ -230,7 +126,7 @@ export const ItemsList: React.FC<ItemsListRouterProps> = ({ }) => {
         <div className="item-listing-layout-sider-content-discount" >
             <text>
                 DISCOUNT RANGE
-                            </text>
+            </text>
             <div className="item-listing-layout-sider-content-discount-options">
                 <Checkbox.Group value={filterDiscount} onChange={e => { onChange(e, 'discount') }} >
                     {discountOptions}

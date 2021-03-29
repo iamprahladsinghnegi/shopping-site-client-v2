@@ -45,34 +45,47 @@
 
 @media (max-width: 767px)  {
   .homepage{
-    &-item{
-      &-brands{
-        &-container{
-          overflow-x: hidden;
-          .ant-row{
-            // margin: 0;
-            overflow-x: auto;
-            flex-flow: row;
-
-            //to hide scroll
-            -ms-overflow-style: none;  
-            scrollbar-width: none; 
-            &::-webkit-scrollbar {
-                display: none;
-          }
-          }
-        }
+    &-carousel{
+      .slick-dots{
+        display: none !important;
       }
+    }
+    &-item{
+      // &-brands{
+      //   &-container{
+      //     overflow-x: hidden;
+      //     .ant-row{
+      //       // margin: 0;
+      //       overflow-x: auto;
+      //       flex-flow: row;
+
+      //       //to hide scroll
+      //       -ms-overflow-style: none;  
+      //       scrollbar-width: none; 
+      //       &::-webkit-scrollbar {
+      //           display: none;
+      //     }
+      //     }
+      //   }
+      // }
       &-categories{
         h1{
           font-size: 16px;
         }
         &-container{
-          overflow-x: auto;
-          .ant-row{
-            // margin: 0;
-            flex-flow: row;
-          }
+        //   overflow-x: auto;
+        //   .ant-row{
+        //     // margin: 0;
+        //     overflow-x: auto;
+        //     flex-flow: row;
+
+        //     //to hide scroll
+        //     -ms-overflow-style: none;  
+        //     scrollbar-width: none; 
+        //     &::-webkit-scrollbar {
+        //         display: none;
+        //   }
+        //   }
         }
       }
     }
