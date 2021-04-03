@@ -1,5 +1,5 @@
 import { Card, Col, Row, Modal, Slider, Radio, RadioChangeEvent, Skeleton, message } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
 import { useGetItemDetailsForCartQuery, useAdjustItemQyantityMutation, GetCartDetailsQuery, GetCartDetailsDocument, CartItem, useAdjustItemSizeMutation, useRemoveItemFromCartMutation } from 'src/generated/graphql';
 // import { SettingOutlined, EditOutlined } from '@ant-design/icons';
 import './index.scss';

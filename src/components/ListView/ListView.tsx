@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row, List, Skeleton, Card } from 'antd'
+import { Col, Row, Skeleton, Card } from 'antd'
 import { CustomCard } from '../CustomCard/CustomCard';
 import './index.scss';
 import { useHistory } from 'react-router-dom';
@@ -24,10 +24,10 @@ export const ListView: React.FC<ListViewProps> = ({ category, itemIds }) => {
     const onClickList = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         history.push({ pathname: `./${category}` })
     }
-    const header: JSX.Element = <div className="listview-header">
-        <h3>{category}</h3>
-        <button onClick={e => { onClickList(e) }} >{`View All >`}</button>
-    </div>
+    // const header: JSX.Element = <div className="listview-header">
+    //     <h3>{category}</h3>
+    //     <button onClick={e => { onClickList(e) }} >{`View All >`}</button>
+    // </div>
     const handleOnClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string, name?: string): void => {
         history.push({ pathname: `./${category}/${id}$${name}` })
     }

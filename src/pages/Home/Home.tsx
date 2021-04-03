@@ -1,27 +1,12 @@
 import React from 'react';
 import "./index.scss";
-import { Carousel, Col, Divider, Row } from 'antd';
+import { Carousel, Col, Row } from 'antd';
 import { CustomCard } from '../../components/CustomCard/CustomCard';
 import { RouteComponentProps } from 'react-router-dom';
 import { useGetAllSubCategoriesWithCategoryQuery, useGetLAtestOffersQuery } from 'src/generated/graphql';
 interface HomeProps {
 
 }
-
-const tempData = [
-    { cateogry: "Jeans", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "Jeans" },
-    { cateogry: "jeans-1", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "jeans-1" },
-    { cateogry: "jeans-2", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "jeans-2" },
-    { cateogry: "jeans-3", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "jeans-3" },
-    { cateogry: "jeans-4", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "jeans-4" },
-    { cateogry: "jeans-5", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "jeans-5" },
-    { cateogry: "jeans-6", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "jeans-6" },
-    { cateogry: "jeans-7", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "jeans-7" },
-    { cateogry: "jeans-8", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "jeans-8" },
-    { cateogry: "jeans-9", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "jeans-9" },
-    { cateogry: "jeans-10", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "jeans-10" },
-    { cateogry: "jeans-11", imageUrl: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png", title: "jeans-11" }
-]
 
 export const Home: React.FC<HomeProps & RouteComponentProps> = ({ history }) => {
     const { data: offers, loading: offerLoading } = useGetLAtestOffersQuery();

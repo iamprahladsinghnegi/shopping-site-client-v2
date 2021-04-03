@@ -1,4 +1,3 @@
-import { Divider } from 'antd';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { NavBreadcrumb } from 'src/components/Breadcrumb/Breadcrumb';

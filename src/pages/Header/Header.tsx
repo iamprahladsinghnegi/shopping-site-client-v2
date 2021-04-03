@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Avatar, Dropdown, Drawer, message, Menu, Row, Col, Input, Button } from 'antd';
+import React, { useState } from 'react';
+import { Avatar, Dropdown, Drawer, Menu, Row, Col, Input, Button } from 'antd';
 import './index.scss';
 import "antd/dist/antd.css";
 import { UserOutlined, NotificationOutlined, ShoppingCartOutlined, SearchOutlined, MenuOutlined, ArrowLeftOutlined } from '@ant-design/icons';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ALlitem } from './ALlitem';
 import { ItemDetails } from './ItemDetails';
@@ -9,7 +9,7 @@ interface ItemsProps {
 }
 
 export const Items: React.FC<ItemsProps> = ({ }) => {
-    const { path, url } = useRouteMatch();
+    const { path } = useRouteMatch();
     return (
         <Switch>
             <Route exact path={`${path}/default`} component={ALlitem} />

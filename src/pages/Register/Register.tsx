@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { RouteComponentProps } from 'react-router-dom';
 import { useRegisterUserMutation } from 'src/generated/graphql';
 import './index.scss';
