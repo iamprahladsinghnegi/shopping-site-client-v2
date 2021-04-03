@@ -9,7 +9,7 @@ export const App: React.FC<AppProps> = () => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetch('http://localhost:5555/refresh_token', { credentials: 'include', method: "POST" }).then(res => {
+        fetch('https://shopping-site-v2.herokuapp.com/refresh_token', { credentials: 'include', method: "POST" }).then(res => {
             return res.json()
         }).then(({ accessToken }) => {
             setAccessToken(accessToken);

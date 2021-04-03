@@ -13,7 +13,7 @@ import './index.scss';
 // retry https://www.apollographql.com/docs/link/links/error/#retrying-failed-requests
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:5555/graphql',
+  uri: 'https://shopping-site-v2.herokuapp.com/graphql',
   credentials: "include"
 });
 
@@ -55,7 +55,7 @@ const customeLink = ApolloLink.from([
     },
     fetchAccessToken: () => {
       console.log('trying to get new access token [Client]')
-      return fetch('http://localhost:5555/refresh_token', { credentials: 'include', method: "POST" })
+      return fetch('https://shopping-site-v2.herokuapp.com/refresh_token', { credentials: 'include', method: "POST" })
     },
     handleFetch: accessToken => {
       setAccessToken(accessToken);
